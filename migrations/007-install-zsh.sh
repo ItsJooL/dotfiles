@@ -5,15 +5,14 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
-# Source logging and installation utilities
+# Source logging
 source "$UTILS_DIR/log.sh"
-source "$UTILS_DIR/install-package.sh"
 
 SOURCE_CONFIG_DIR="$SCRIPT_DIR/../config/zsh"
 TARGET_CONFIG_DIR="$HOME"
 
 info "Installing Zsh..."
-install_package zsh
+"$UTILS_DIR/install-package.sh" zsh
 success "Zsh installed successfully!"
 
 info "Linking Zsh configuration with Stow..."
