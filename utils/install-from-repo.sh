@@ -1,12 +1,13 @@
 #!/bin/bash
 set -e
 
-# Define script and utility directories relative to the script's location.
+# Define script directory - this script is in utils/
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UTILS_DIR="$(dirname "$SCRIPT_DIR")"
-source "$UTILS_DIR/log.sh"
 
-ARCH="amd64"
+# Source logging utilities from the same directory
+source "$SCRIPT_DIR/log.sh"
+
+ARCH="x86_64"
 OS="linux"
 
 # Function to install a binary from a GitHub release
@@ -35,13 +36,25 @@ install_binary() {
     fi
 
     info "Downloading from $download_url"
-    curl -L --progress-bar -o "$TEMP_DIR/archive.tar.gz" "$download_url"
+    if ! curl -L --progress-bar -o "$TEMP_DIR/archive.tar.gz" "$download_url"; then
+        error "Failed to download $binary_name from $download_url"
+        rm -rf "$TEMP_DIR"
+        return 1
+    fi
 
     # Handle different archive types
     if [[ "$download_url" == *.tar.gz ]]; then
-        tar -xzf "$TEMP_DIR/archive.tar.gz" -C "$TEMP_DIR"
+        if ! tar -xzf "$TEMP_DIR/archive.tar.gz" -C "$TEMP_DIR"; then
+            error "Failed to extract archive for $binary_name"
+            rm -rf "$TEMP_DIR"
+            return 1
+        fi
     elif [[ "$download_url" == *.zip ]]; then
-        unzip "$TEMP_DIR/archive.tar.gz" -d "$TEMP_DIR"
+        if ! unzip "$TEMP_DIR/archive.tar.gz" -d "$TEMP_DIR"; then
+            error "Failed to extract zip archive for $binary_name"
+            rm -rf "$TEMP_DIR"
+            return 1
+        fi
     fi
 
     # Find the binary based on the rename pattern or a default name
@@ -54,21 +67,35 @@ install_binary() {
 
     if [[ -n "$source_binary" ]]; then
         info "Installing $source_binary to /usr/local/bin/$binary_name..."
-        sudo install -Dm755 "$source_binary" "/usr/local/bin/$binary_name"
+        if ! sudo install -Dm755 "$source_binary" "/usr/local/bin/$binary_name"; then
+            error "Failed to install $binary_name to /usr/local/bin"
+            rm -rf "$TEMP_DIR"
+            return 1
+        fi
+
         if [[ -n "$rename_pattern" ]]; then
-             local new_name="${rename_pattern##* -> }"
-             info "Renaming $binary_name to $new_name..."
-             sudo mv "/usr/local/bin/$binary_name" "/usr/local/bin/$new_name"
+            local new_name="${rename_pattern##* -> }"
+            info "Renaming $binary_name to $new_name..."
+            if ! sudo mv "/usr/local/bin/$binary_name" "/usr/local/bin/$new_name"; then
+                error "Failed to rename $binary_name to $new_name"
+                rm -rf "$TEMP_DIR"
+                return 1
+            fi
         fi
         success "$binary_name installation completed!"
     else
-        error "Could not find binary in archive."
+        error "Could not find binary in archive for $binary_name"
+        rm -rf "$TEMP_DIR"
+        return 1
     fi
 
     rm -rf "$TEMP_DIR"
 
     # Run any post-install commands (e.g., cache build)
     if [[ -n "$post_install_cmd" ]]; then
-        eval "$post_install_cmd"
+        info "Running post-install command: $post_install_cmd"
+        if ! eval "$post_install_cmd"; then
+            warn "Post-install command failed, but continuing..."
+        fi
     fi
 }
