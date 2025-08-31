@@ -29,9 +29,9 @@ fi
 # Set up the theme and configuration directory.
 info "Setting up Bat config and themes..."
 SOURCE_CONFIG_DIR="$SCRIPT_DIR/../config/bat"
-TARGET_CONFIG_DIR="$HOME/.config"
+TARGET_CONFIG_DIR="$HOME/.config/bat"
 
-mkdir -p "$TARGET_CONFIG_DIR/bat"
+mkdir -p "$TARGET_CONFIG_DIR"
 
 stow -v -R -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" bat
 info "Building bat cache..."

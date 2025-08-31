@@ -48,7 +48,8 @@ install_ags_fedora() {
     local build_deps=(
         "npm" "meson" "ninja-build" "golang" "gobject-introspection-devel"
         "gtk3-devel" "gtk-layer-shell-devel" "gtk4-devel" "gtk4-layer-shell-devel"
-        "git"
+        "git" "cmake"
+        "vala" "valadoc" "wayland-protocols-devel"
     )
 
     for dep in "${build_deps[@]}"; do
@@ -60,6 +61,19 @@ install_ags_fedora() {
 
     # Install Astal
     git clone https://github.com/aylur/astal "$temp_dir/astal"
+    # astal-io
+    cd "$temp_dir/astal/lib/astal/io"
+    meson setup build
+    sudo meson install -C build
+    # astal-3
+    cd "$temp_dir/astal/lib/astal/gtk3"
+    meson setup build
+    sudo meson install -C build
+    # astal-4
+    cd "$temp_dir/astal/lib/astal/gtk4"
+    meson setup build
+    sudo meson install -C build
+
     cd "$temp_dir/astal/lang/gjs"
     meson setup --prefix /usr build
     sudo meson install -C build
@@ -68,19 +82,9 @@ install_ags_fedora() {
     info "Building and installing AGS v2..."
     git clone https://github.com/aylur/ags.git "$temp_dir/ags"
     cd "$temp_dir/ags"
-    go install -ldflags "\
-    -X 'main.gtk4LayerShell=$(pkg-config --variable=libdir gtk4-layer-shell-0)/libgtk4-layer-shell.so' \
-    -X 'main.astalGjs=$(pkg-config --variable=srcdir astal-gjs)'"
-
-    # Move AGS binary to system location
-    if [[ -f "$HOME/go/bin/ags" ]]; then
-        sudo mv "$HOME/go/bin/ags" /usr/local/bin/ags
-    elif [[ -f "$GOPATH/bin/ags" ]]; then
-        sudo mv "$GOPATH/bin/ags" /usr/local/bin/ags
-    else
-        error "AGS binary not found after installation"
-        exit 1
-    fi
+    npm install
+    meson setup build
+    sudo meson install -C build
 
     # Cleanup
     rm -rf "$temp_dir"
@@ -175,9 +179,7 @@ install_fedora_packages() {
     # Install sass via npm
     info "Installing sass via npm..."
     sudo npm install -g sass || warn "Failed to install sass via npm"
-
-    # Install HyprPanel from source
-    install_hyprpanel_from_source
+    sudo dnf install -y "hyprpanel" || warn "Failed to install hyprpanel"
 }
 
 # Install HyprPanel from source (used for Fedora)

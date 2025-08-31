@@ -22,43 +22,29 @@ get_latest_tag() {
 
 info "Starting installation of core binaries from git repositories..."
 
-# Ripgrep
-install_binary "https://github.com/BurntSushi/ripgrep" "rg" "ripgrep-14.1.1-x86_64-unknown-linux-musl.tar.gz" "ripgrep*/rg -> rg"
+install_binary "https://github.com/BurntSushi/ripgrep" "rg" "aarch64-unknown-linux-gnu"
 success "Ripgrep installed!"
 
-# Fd - get the actual latest version and construct exact filename
 info "Getting latest fd release version..."
-FD_TAG=$(get_latest_tag "https://github.com/sharkdp/fd")
-if [[ -n "$FD_TAG" ]]; then
-    install_binary "https://github.com/sharkdp/fd" "fd" "fd-${FD_TAG}-x86_64-unknown-linux-musl.tar.gz"
-else
-    # Fallback to known working version
-    install_binary "https://github.com/sharkdp/fd" "fd" "fd-v10.3.0-x86_64-unknown-linux-musl.tar.gz"
-fi
+install_binary "https://github.com/sharkdp/fd" "fd" "fd-{{TAG}}-x86_64-unknown-linux-musl.tar.gz"
 success "fd installed!"
 
-# Eza
-install_binary "https://github.com/eza-community/eza" "eza" "eza_x86_64-unknown-linux-musl.tar.gz"
+install_binary "https://github.com/eza-community/eza" "eza" "x86_64-unknown-linux-musl"
 success "Eza installed!"
 
-# FZF
-install_binary "https://github.com/junegunn/fzf" "fzf" "fzf-0.55.0-linux_amd64.tar.gz"
+install_binary "https://github.com/junegunn/fzf" "fzf" "fzf-{{VERSION}}-linux_amd64.tar.gz"
 success "FZF installed!"
 
-# Zoxide
-install_binary "https://github.com/ajeetdsouza/zoxide" "zoxide" "zoxide-0.9.8-x86_64-unknown-linux-musl.tar.gz"
+install_binary "https://github.com/ajeetdsouza/zoxide" "zoxide" "zoxide-{{VERSION}}-x86_64-unknown-linux-musl.tar.gz"
 success "Zoxide installed!"
 
-# Mcfly
-install_binary "https://github.com/cantino/mcfly" "mcfly" "mcfly-v0.9.3-x86_64-unknown-linux-musl.tar.gz"
+install_binary "https://github.com/cantino/mcfly" "mcfly" "mcfly-{{TAG}}-x86_64-unknown-linux-musl.tar.gz"
 success "Mcfly installed!"
 
-# Mcfly-Fzf
-install_binary "https://github.com/bnprks/mcfly-fzf" "mcfly-fzf" "mcfly-fzf-1.0.4-x86_64-unknown-linux-musl.tar.gz"
+install_binary "https://github.com/bnprks/mcfly-fzf" "mcfly-fzf" "mcfly-fzf-{{VERSION}}-x86_64-unknown-linux-musl.tar.gz"
 success "Mcfly-fzf installed!"
 
-# Carapace
-install_binary "https://github.com/carapace-sh/carapace-bin" "carapace" "carapace-bin_1.4.1_linux_amd64.tar.gz"
+install_binary "https://github.com/carapace-sh/carapace-bin" "carapace" "carapace-bin_{{VERSION}}_linux_amd64.tar.gz"
 success "Carapace installed!"
 
 success "Finished install shell utils."

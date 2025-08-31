@@ -1,21 +1,34 @@
 #!/bin/bash
-set -e
 
-# Define script directory - this script is in utils/
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Helper function to get latest release tag from GitHub API
+get_latest_tag() {
+    local repo_url=$1
+    local repo_path=$(echo "$repo_url" | sed 's|https://github.com/||')
+    curl -fsSL "https://api.github.com/repos/$repo_path/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+}
 
-# Source logging utilities from the same directory
-source "$SCRIPT_DIR/log.sh"
+# Helper function to find matching asset URL from latest release
+get_latest_asset_url() {
+    local repo_url=$1
+    local pattern=$2
+    local repo_path=$(echo "$repo_url" | sed 's|https://github.com/||')
 
-ARCH="x86_64"
-OS="linux"
+    # Get release info
+    local release_data=$(curl -fsSL "https://api.github.com/repos/$repo_path/releases/latest")
+
+    # Find matching asset
+    echo "$release_data" | grep -o '"browser_download_url": "[^"]*"' | \
+        grep -o 'https://[^"]*' | \
+        grep -E "$pattern" | \
+        head -1
+}
 
 # Function to install a binary from a GitHub release
-# Usage: install_binary <repo_url> <binary_name> [<custom_archive_name>] [<rename_pattern>] [<post_install_cmd>]
+# Usage: install_binary <repo_url> <binary_name> [<archive_pattern_or_name>] [<rename_pattern>] [<post_install_cmd>]
 install_binary() {
     local repo_url=$1
     local binary_name=$2
-    local custom_archive_name=$3
+    local archive_pattern=$3
     local rename_pattern=$4
     local post_install_cmd=$5
 
@@ -27,12 +40,41 @@ install_binary() {
     info "Installing $binary_name..."
     TEMP_DIR=$(mktemp -d)
 
-    # Construct download URL
     local download_url
-    if [[ -n "$custom_archive_name" ]]; then
-        download_url="$repo_url/releases/latest/download/$custom_archive_name"
-    else
+
+    # Determine download strategy
+    if [[ -z "$archive_pattern" ]]; then
+        # Default pattern: ${binary_name}_${OS}_${ARCH}.tar.gz
         download_url="$repo_url/releases/latest/download/${binary_name}_${OS}_${ARCH}.tar.gz"
+        info "Using default pattern: ${binary_name}_${OS}_${ARCH}.tar.gz"
+    elif [[ "$archive_pattern" == *".tar.gz" ]] || [[ "$archive_pattern" == *".zip" ]]; then
+        # Specific filename provided - check if it contains version placeholders
+        if [[ "$archive_pattern" == *"{{VERSION}}"* ]] || [[ "$archive_pattern" == *"{{TAG}}"* ]]; then
+            # Get latest version and substitute
+            local latest_tag=$(get_latest_tag "$repo_url")
+            if [[ -n "$latest_tag" ]]; then
+                # Remove 'v' prefix if present for {{VERSION}}
+                local version="${latest_tag#v}"
+                archive_pattern="${archive_pattern//\{\{VERSION\}\}/$version}"
+                archive_pattern="${archive_pattern//\{\{TAG\}\}/$latest_tag}"
+                info "Using latest version $latest_tag in pattern: $archive_pattern"
+            else
+                error "Failed to get latest version for $binary_name"
+                rm -rf "$TEMP_DIR"
+                return 1
+            fi
+        fi
+        download_url="$repo_url/releases/latest/download/$archive_pattern"
+    else
+        # Pattern for auto-detection (e.g., "linux_amd64", "x86_64-unknown-linux-musl")
+        info "Auto-detecting latest asset matching pattern: $archive_pattern"
+        download_url=$(get_latest_asset_url "$repo_url" "$archive_pattern")
+        if [[ -z "$download_url" ]]; then
+            error "No matching asset found for pattern: $archive_pattern"
+            rm -rf "$TEMP_DIR"
+            return 1
+        fi
+        info "Found matching asset: $download_url"
     fi
 
     info "Downloading from $download_url"
@@ -50,7 +92,7 @@ install_binary() {
             return 1
         fi
     elif [[ "$download_url" == *.zip ]]; then
-        if ! unzip "$TEMP_DIR/archive.tar.gz" -d "$TEMP_DIR"; then
+        if ! unzip -q "$TEMP_DIR/archive.tar.gz" -d "$TEMP_DIR"; then
             error "Failed to extract zip archive for $binary_name"
             rm -rf "$TEMP_DIR"
             return 1
@@ -62,7 +104,11 @@ install_binary() {
     if [[ -n "$rename_pattern" ]]; then
         source_binary=$(find "$TEMP_DIR" -type f -name "${rename_pattern%% ->*}" -print -quit)
     else
-        source_binary=$(find "$TEMP_DIR" -type f -name "$binary_name" -print -quit)
+        source_binary=$(find "$TEMP_DIR" -type f -name "$binary_name" -executable -print -quit)
+        # Fallback: look for any executable file if exact name not found
+        if [[ -z "$source_binary" ]]; then
+            source_binary=$(find "$TEMP_DIR" -type f -executable -print -quit)
+        fi
     fi
 
     if [[ -n "$source_binary" ]]; then
