@@ -9,6 +9,9 @@ REQUIRED_DEPS=(
     "curl"
     "sha256sum"
     "find"
+    "gzip"
+    "unzip"
+    "tar"
 )
 
 # Optional dependencies (will warn but not fail)
