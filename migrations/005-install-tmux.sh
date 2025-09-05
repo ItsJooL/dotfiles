@@ -23,4 +23,7 @@ fi
 info "Setting up tmux config..."
 mkdir -p "$HOME/.config/tmux"
 stow -v -R -d "$SCRIPT_DIR/../config" -t "$HOME/.config/tmux" tmux
+
+# Get TPM
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 success "tmux configuration linked!"
