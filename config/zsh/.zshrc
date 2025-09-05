@@ -134,21 +134,45 @@ _zoxide_fzf_widget() {
 }
 zle -N _zoxide_fzf_widget
 
-# Carapace setup
-_setup_carapace() {
-  [[ -n "$_CARAPACE_INIT_DONE" ]] && return
-  autoload -Uz compinit && compinit -C
-  zstyle ":completion:*" format "${CATPPUCCIN_MOCHA_YELLOW}%d${RESET_COLOR}"
-  source <(carapace _carapace)
-  export _CARAPACE_INIT_DONE=1
-}
+# =============================================================================
+# FZF CONFIGURATION (Must be set before loading FZF)
+# =============================================================================
+# Configure FZF with catppuccin mocha colors
+export FZF_DEFAULT_OPTS="
+  --color=bg+:$CATPPUCCIN_MOCHA_SURFACE0,bg:$CATPPUCCIN_MOCHA_BASE,spinner:$CATPPUCCIN_MOCHA_ROSEWATER,hl:$CATPPUCCIN_MOCHA_RED
+  --color=fg:$CATPPUCCIN_MOCHA_TEXT,header:$CATPPUCCIN_MOCHA_RED,info:$CATPPUCCIN_MOCHA_MAUVE,pointer:$CATPPUCCIN_MOCHA_ROSEWATER
+  --color=marker:$CATPPUCCIN_MOCHA_LAVENDER,fg+:$CATPPUCCIN_MOCHA_TEXT,prompt:$CATPPUCCIN_MOCHA_MAUVE,hl+:$CATPPUCCIN_MOCHA_RED
+  --color=selected-bg:$CATPPUCCIN_MOCHA_SURFACE1,selected-fg:$CATPPUCCIN_MOCHA_TEXT
+  --color=gutter:$CATPPUCCIN_MOCHA_BASE,border:$CATPPUCCIN_MOCHA_BLUE
+  --border=rounded
+  --multi"
 
-_carapace_tmux_fix() {
-  if [[ -n "$TMUX" ]] && [[ -z "$_CARAPACE_TMUX_INIT_DONE" ]]; then
-    _setup_carapace
-    export _CARAPACE_TMUX_INIT_DONE=1
-  fi
-}
+export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --theme=\"Catppuccin Mocha\" --line-range :500 {}' --preview-window=right:60%:wrap"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --icons=always --color=always {} | head -200' --preview-window=right:60%:wrap"
+export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git --type f"
+
+# Configure FZF-TAB
+zstyle ':fzf-tab:*' fzf-command fzf
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --icons=always --tree --level=1 --color=always $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza --icons=always --tree --level=1 --color=always $realpath'
+zstyle ':fzf-tab:*' query-string ''
+zstyle ':fzf-tab:*' continuous-trigger '/'
+zstyle ':fzf-tab:*' switch-group ',' '.'
+zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
+    fzf-preview 'echo $description'
+
+zstyle ':fzf-tab:*' fzf-flags \
+  --color=bg+:$CATPPUCCIN_MOCHA_SURFACE0,bg:$CATPPUCCIN_MOCHA_BASE,spinner:$CATPPUCCIN_MOCHA_ROSEWATER,hl:$CATPPUCCIN_MOCHA_RED \
+  --color=fg:$CATPPUCCIN_MOCHA_TEXT,header:$CATPPUCCIN_MOCHA_RED,info:$CATPPUCCIN_MOCHA_MAUVE,pointer:$CATPPUCCIN_MOCHA_ROSEWATER \
+  --color=marker:$CATPPUCCIN_MOCHA_LAVENDER,fg+:$CATPPUCCIN_MOCHA_TEXT,prompt:$CATPPUCCIN_MOCHA_MAUVE,hl+:$CATPPUCCIN_MOCHA_RED \
+  --color=gutter:$CATPPUCCIN_MOCHA_BASE,border:$CATPPUCCIN_MOCHA_BLUE \
+  --height=60% \
+  --layout=reverse \
+  --border=rounded \
+  --border-label="  Selection  " \
+  --border-label-pos=2 \
+  --preview-window=right:60%:wrap \
+  --multi
 
 # =============================================================================
 # KEYBINDINGS
@@ -223,44 +247,17 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete bracketed-paste accept-line push-line-or-edit)
 
 # =============================================================================
-# FZF CONFIGURATION
+# TOOL INITIALIZATION (Set up environment variables first)
 # =============================================================================
-# Configure FZF with catppuccin mocha colors
-export FZF_DEFAULT_OPTS="
-  --color=bg+:$CATPPUCCIN_MOCHA_SURFACE0,bg:$CATPPUCCIN_MOCHA_BASE,spinner:$CATPPUCCIN_MOCHA_ROSEWATER,hl:$CATPPUCCIN_MOCHA_RED
-  --color=fg:$CATPPUCCIN_MOCHA_TEXT,header:$CATPPUCCIN_MOCHA_RED,info:$CATPPUCCIN_MOCHA_MAUVE,pointer:$CATPPUCCIN_MOCHA_ROSEWATER
-  --color=marker:$CATPPUCCIN_MOCHA_LAVENDER,fg+:$CATPPUCCIN_MOCHA_TEXT,prompt:$CATPPUCCIN_MOCHA_MAUVE,hl+:$CATPPUCCIN_MOCHA_RED
-  --color=selected-bg:$CATPPUCCIN_MOCHA_SURFACE1,selected-fg:$CATPPUCCIN_MOCHA_TEXT
-  --color=gutter:$CATPPUCCIN_MOCHA_BASE,border:$CATPPUCCIN_MOCHA_BLUE
-  --border=rounded
-  --multi"
+# Carapace setup (needed before loading plugins)
+export CARAPACE_BRIDGES="zsh,fzf"
+export CARAPACE_CACHE=1
 
-export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --theme='Catppuccin Mocha' --line-range :500 {}' --preview-window=right:60%:wrap"
-export FZF_ALT_C_OPTS="--preview 'eza --tree --icons=always --color=always {} | head -200' --preview-window=right:60%:wrap"
-export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git --type f"
-
-# Configure FZF-TAB
-zstyle ':fzf-tab:*' fzf-command fzf
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --icons=always --tree --level=1 --color=always $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza --icons=always --tree --level=1 --color=always $realpath'
-zstyle ':fzf-tab:*' query-string ''
-zstyle ':fzf-tab:*' continuous-trigger '/'
-zstyle ':fzf-tab:*' switch-group ',' '.'
-zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
-    fzf-preview 'echo $description'
-
-zstyle ':fzf-tab:*' fzf-flags \
-  --color=bg+:$CATPPUCCIN_MOCHA_SURFACE0,bg:$CATPPUCCIN_MOCHA_BASE,spinner:$CATPPUCCIN_MOCHA_ROSEWATER,hl:$CATPPUCCIN_MOCHA_RED \
-  --color=fg:$CATPPUCCIN_MOCHA_TEXT,header:$CATPPUCCIN_MOCHA_RED,info:$CATPPUCCIN_MOCHA_MAUVE,pointer:$CATPPUCCIN_MOCHA_ROSEWATER \
-  --color=marker:$CATPPUCCIN_MOCHA_LAVENDER,fg+:$CATPPUCCIN_MOCHA_TEXT,prompt:$CATPPUCCIN_MOCHA_MAUVE,hl+:$CATPPUCCIN_MOCHA_RED \
-  --color=gutter:$CATPPUCCIN_MOCHA_BASE,border:$CATPPUCCIN_MOCHA_BLUE \
-  --height=60% \
-  --layout=reverse \
-  --border=rounded \
-  --border-label="  Selection  " \
-  --border-label-pos=2 \
-  --preview-window=right:60%:wrap \
-  --multi
+# Initialize tools that are installed
+[[ -x "$(command -v zoxide)" ]] && eval "$(zoxide init --cmd cd zsh)"
+[[ -x "$(command -v mcfly)" ]] && eval "$(mcfly init zsh)"
+[[ -x "$(command -v mcfly-fzf)" ]] && eval "$(mcfly-fzf init zsh)"
+[[ -x "$(command -v carapace)" ]] && source <(carapace _carapace zsh)
 
 # =============================================================================
 # ZINIT SETUP
@@ -280,7 +277,6 @@ zinit light-mode for \
 # =============================================================================
 # PLUGIN HELPER FUNCTIONS
 # =============================================================================
-
 # Helper function for regular plugins with wait/lucid options
 function zicy() {
     # $1: wait time, $2: GitHub repo, $3+: optional extra ice modifiers
@@ -318,7 +314,7 @@ function zicy-snip() {
 # =============================================================================
 # PLUGINS
 # =============================================================================
-# Oh-My-Zsh plugins
+# Oh-My-Zsh plugins (early load)
 zinit wait'1' lucid for \
     OMZL::git.zsh \
     OMZP::git \
@@ -329,39 +325,25 @@ zinit wait'1' lucid for \
     OMZP::kubectx \
     OMZP::command-not-found
 
-
-
-# Carapace shell completion
-export CARAPACE_BRIDGES="zsh,fzf"
-export CARAPACE_CACHE=1
-
-# Regular plugins
-zicy "0c" "hlissner/zsh-autopair"
-zicy "0c" "zdharma-continuum/fast-syntax-highlighting"
-zicy "0c" "junegunn/fzf-git.sh"
-zicy "1c" "Aloxaf/fzf-tab"
-zicy "0a" "junegunn/fzf" as"command" pick"bin/fzf-tmux"
-zicy "0a" "zsh-users/zsh-autosuggestions" atload'_zsh_autosuggest_start'
-
-zinit ice lucid wait"1a" as"null" atload'command -v zoxide &> /dev/null && eval "$(zoxide init --cmd cd zsh)"'
-zinit load zdharma-continuum/null
-zinit ice lucid wait"2a" as"null" atload'command -v mcfly &> /dev/null && eval "$(mcfly init zsh)"'
-zinit load zdharma-continuum/null
-zinit ice lucid wait"3a" as"null" atload'command -v mcfly-fzf &> /dev/null && eval "$(mcfly-fzf init zsh)"'
-zinit load zdharma-continuum/null
-zinit ice lucid wait"2b" as"null" atload'command -v carapace &> /dev/null && source <(carapace _carapace zsh)'
-zinit load zdharma-continuum/null
-zinit ice lucid wait"1a" as"null" atload'command -v oh-my-posh &> /dev/null && eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/omp.toml)"'
-zinit load zdharma-continuum/null
-
-
+# Core completion system first
 zinit light-mode for \
     blockf \
         zsh-users/zsh-completions
 
-# FZF snippets
+# FZF integration (load early, before other FZF-dependent plugins)
 zicy-snip "0a" "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
-zicy-snip "1c" "https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh"
+zicy-snip "0b" "https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh"
+
+# Fast plugins without completion interference
+zicy "0c" "hlissner/zsh-autopair"
+zicy "0c" "junegunn/fzf-git.sh"
+
+# Syntax highlighting and autosuggestions
+zicy "0d" "zsh-users/zsh-autosuggestions" atload'_zsh_autosuggest_start'
+zicy "1a" "zdharma-continuum/fast-syntax-highlighting"
+
+# FZF-TAB last (after other completion systems are set up)
+zicy "1b" "Aloxaf/fzf-tab"
 
 # =============================================================================
 # COMPLETION INITIALIZATION
@@ -369,5 +351,23 @@ zicy-snip "1c" "https://raw.githubusercontent.com/junegunn/fzf/master/shell/comp
 autoload -Uz compinit && compinit
 zinit cdreplay -q
 
+# =============================================================================
+# OH-MY-POSH PROMPT SETUP
+# =============================================================================
+if [[ -x "$(command -v oh-my-posh)" ]]; then
+    eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/omp.toml)"
+fi
+
+# =============================================================================
+# POST-LOAD FIXES
+# =============================================================================
+# These will be handled by the delayed tool initialization
+
+# =============================================================================
+# EXTEND CONFIGURATION (MACHINE-SPECIFIC)
+# =============================================================================
 # Optional: Load extra config that is not tracked and unique per machine
 [[ -f ~/.zsh_local ]] && source ~/.zsh_local
+
+# Clear the screen on startup
+clear
