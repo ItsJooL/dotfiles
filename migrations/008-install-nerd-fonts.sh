@@ -66,6 +66,7 @@ install_nerd_font "JetBrainsMono" "JetBrainsMono"
 install_nerd_font "FiraCode" "FiraCode"
 install_nerd_font "Hack" "Hack"
 install_nerd_font "SourceCodePro" "SauceCodePro"
+install_nerd_font "CascadiaCode" "CaskaydiaCove"
 
 # Refresh font cache
 info "Refreshing font cache..."

@@ -4,6 +4,7 @@ set -e
 # Define script and utility directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
+ORIGINAL_DIR="$(pwd)"
 
 # Source logging utilities
 source "$UTILS_DIR/log.sh"
@@ -89,6 +90,7 @@ install_ags_fedora() {
     # Cleanup
     rm -rf "$temp_dir"
     success "AGS v2 installed from source!"
+    cd $ORIGINAL_DIR
 }
 
 # Install packages for Arch Linux
@@ -252,6 +254,14 @@ link_configurations() {
         warn "Hyprland config directory not found, skipping..."
     fi
 
+    # Link HyprPanel config
+       if [[ -d "$SCRIPT_DIR/../config/hyprpanel" ]]; then
+           mkdir -p "$HOME/.config/hyprpanel"
+           stow -v -R -d "$SCRIPT_DIR/../config" -t "$HOME/.config" hyprpanel
+           success "HyprPanel configuration linked!"
+       else
+           warn "HyprPanel config directory not found, skipping..."
+       fi
     # Create additional config directories that might be needed
     mkdir -p "$HOME/.config/waybar"
     mkdir -p "$HOME/.config/swww"

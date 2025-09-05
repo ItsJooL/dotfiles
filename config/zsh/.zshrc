@@ -235,7 +235,7 @@ export FZF_DEFAULT_OPTS="
   --border=rounded
   --multi"
 
-export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --theme=Catppuccin-mocha --line-range :500 {}' --preview-window=right:60%:wrap"
+export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --theme='Catppuccin Mocha' --line-range :500 {}' --preview-window=right:60%:wrap"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --icons=always --color=always {} | head -200' --preview-window=right:60%:wrap"
 export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git --type f"
 
@@ -329,12 +329,6 @@ zinit wait'1' lucid for \
     OMZP::kubectx \
     OMZP::command-not-found
 
-# util evaluations
-command -v zoxide &> /dev/null && eval "$(zoxide init --cmd cd zsh)"
-command -v mcfly &> /dev/null && eval "$(mcfly init zsh)"
-command -v mcfly-fzf &> /dev/null && eval "$(mcfly-fzf init zsh)"
-command -v carapace &> /dev/null && source <(carapace _carapace zsh)
-command -v oh-my-posh &> /dev/null && eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/omp.toml)"
 
 
 # Carapace shell completion
@@ -342,12 +336,24 @@ export CARAPACE_BRIDGES="zsh,fzf"
 export CARAPACE_CACHE=1
 
 # Regular plugins
-zicy "0c" "hlissner/zsh-autopair" atinit"zpcompinit;zpcdreplay"
-zicy "0c" "zdharma-continuum/fast-syntax-highlighting" atinit"zpcompinit;zpcdreplay"
+zicy "0c" "hlissner/zsh-autopair"
+zicy "0c" "zdharma-continuum/fast-syntax-highlighting"
 zicy "0c" "junegunn/fzf-git.sh"
 zicy "1c" "Aloxaf/fzf-tab"
 zicy "0a" "junegunn/fzf" as"command" pick"bin/fzf-tmux"
 zicy "0a" "zsh-users/zsh-autosuggestions" atload'_zsh_autosuggest_start'
+
+zinit ice lucid wait"1a" as"null" atload'command -v zoxide &> /dev/null && eval "$(zoxide init --cmd cd zsh)"'
+zinit load zdharma-continuum/null
+zinit ice lucid wait"2a" as"null" atload'command -v mcfly &> /dev/null && eval "$(mcfly init zsh)"'
+zinit load zdharma-continuum/null
+zinit ice lucid wait"3a" as"null" atload'command -v mcfly-fzf &> /dev/null && eval "$(mcfly-fzf init zsh)"'
+zinit load zdharma-continuum/null
+zinit ice lucid wait"2b" as"null" atload'command -v carapace &> /dev/null && source <(carapace _carapace zsh)'
+zinit load zdharma-continuum/null
+zinit ice lucid wait"1a" as"null" atload'command -v oh-my-posh &> /dev/null && eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/omp.toml)"'
+zinit load zdharma-continuum/null
+
 
 zinit light-mode for \
     blockf \
@@ -361,7 +367,7 @@ zicy-snip "1c" "https://raw.githubusercontent.com/junegunn/fzf/master/shell/comp
 # COMPLETION INITIALIZATION
 # =============================================================================
 autoload -Uz compinit && compinit
-
+zinit cdreplay -q
 
 # Optional: Load extra config that is not tracked and unique per machine
 [[ -f ~/.zsh_local ]] && source ~/.zsh_local

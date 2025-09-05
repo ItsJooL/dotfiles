@@ -22,5 +22,5 @@ fi
 # Set up the tmux configuration directory.
 info "Setting up tmux config..."
 mkdir -p "$HOME/.config/tmux"
-stow -v -R -d "$SCRIPT_DIR/../config" -t "$HOME/.config" tmux
+stow -v -R -d "$SCRIPT_DIR/../config" -t "$HOME/.config/tmux" tmux
 success "tmux configuration linked!"
