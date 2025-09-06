@@ -392,19 +392,39 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 
 # =============================================================================
-# ADDITIONAL INTEGRATIONS
+# LAZY LOAD SOME CONFIGURATIONS
 # =============================================================================
-# Kubectl completion
-[[ -x "$(command -v kubectl)" ]] && source <(kubectl completion zsh 2>/dev/null)
+# Lazy load kubectl completion
+if command -v kubectl &>/dev/null; then
+  kubectl() {
+    unfunction kubectl
+    # Load completion
+    source <(command kubectl completion zsh 2>/dev/null)
+    # Re-run original command
+    command kubectl "$@"
+  }
+fi
 
-# Node Version Manager
-[[ -s "$NVM_DIR/nvm.sh" ]] && \. "$NVM_DIR/nvm.sh"
+# Lazy load NVM
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+  nvm() {
+    unfunction nvm
+    source "$NVM_DIR/nvm.sh"
+    nvm "$@"
+  }
+fi
 
-# SDKMan
-[[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"
+# Lazy load SDKMAN
+if [[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]]; then
+  sdk() {
+    unfunction sdk
+    source "${HOME}/.sdkman/bin/sdkman-init.sh"
+    sdk "$@"
+  }
+fi
 
 # =============================================================================
-# USER CUSTOMIZATION
+# UNTRACKED CUSTOMIZATION
 # =============================================================================
 [[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
 [[ -f ~/.zsh_functions ]] && source ~/.zsh_functions

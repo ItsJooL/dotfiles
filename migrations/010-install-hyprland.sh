@@ -103,6 +103,8 @@ install_arch_packages() {
         "hyprpaper"
         "waybar"
         "swww"
+        "hyprshot"
+        "wlogout"
     )
 
     # Install core packages via pacman
@@ -154,6 +156,8 @@ install_fedora_packages() {
         "hyprpaper"
         "waybar"
         "swww"
+        "hyprshot"
+        "wlogout"
     )
 
     # Install core packages via dnf
@@ -171,7 +175,7 @@ install_fedora_packages() {
         "wireplumber" "upower" "libgtop2" "bluez" "bluez-tools"
         "grimblast" "hyprpicker" "btop" "NetworkManager" "wl-clipboard"
         "brightnessctl" "gnome-bluetooth" "power-profiles-daemon"
-        "gvfs" "nodejs" "gtksourceview3" "libsoup3"
+        "gvfs" "nodejs" "gtksourceview3" "libsoup3" "hyprland-qtutils"
     )
 
     for dep in "${hyprpanel_deps[@]}"; do
