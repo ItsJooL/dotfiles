@@ -1,0 +1,143 @@
+{
+  "position": "top",
+  "margin": "8 16 0",
+  "mod": "dock",
+
+  "modules-left": ["hyprland/workspaces"],
+
+  "modules-center": ["hyprland/window"],
+
+  "modules-right": [
+    "tray",
+    "network",
+    "bluetooth",
+    "battery",
+    "idle_inhibitor",
+    "pulseaudio",
+    "custom/notification",
+    "clock",
+    "custom/wlogout",
+  ],
+
+  "hyprland/window": {
+    "format": "{title}",
+    "max-length": 50,
+    "separate-outputs": true,
+  },
+
+  "hyprland/workspaces": {
+    "persistent-workspaces": {
+      "*": [1, 2, 3, 4, 5],
+    },
+    "format": "{name}",
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "default": "",
+    },
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 20,
+  },
+
+  "network": {
+    "format-icons": ["󰤟", "󰤢", "󰤥", "󰤨"],
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰈀",
+    "format-linked": "󰄡",
+    "format-disconnected": "󰤮",
+    "tooltip-format": "{essid} ({signalStrength}%) - {ipaddr}",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%) - {ipaddr}",
+    "tooltip-format-ethernet": "{ifname} - {ipaddr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "on-click": "nm-connection-editor",
+  },
+
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "format-on": "󰂯",
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "on-click": "blueman-manager",
+  },
+
+  "battery": {
+    "full-at": 95,
+    "states": {
+      "warning": 35,
+      "critical": 10,
+    },
+    "format": "{icon}",
+    "format-plugged": "󰂄",
+    "format-charging": "󰂄",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "tooltip-format": "{capacity}% - {time}",
+  },
+
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "󰅶",
+      "deactivated": "󰾪",
+    },
+    "tooltip-format-activated": "Idle inhibitor active",
+    "tooltip-format-deactivated": "Idle inhibitor inactive",
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟",
+    "format-icons": {
+      "headphone": "󰋋",
+      "hands-free": "󰋎",
+      "headset": "󰋎",
+      "phone": "󰄜",
+      "portable": "󰄜",
+      "car": "󰄋",
+      "default": ["󰕿", "󰖀", "󰕾"],
+    },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "pamixer -t",
+    "tooltip-format": "{desc} - {volume}%",
+  },
+
+  "custom/notification": {
+    "format": "󰂚",
+    "tooltip": "Notifications",
+    "on-click": "swaync-client -t",
+  },
+
+  "clock": {
+    "format": "{:%R %a %d/%m}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "year",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#cba6f7'><b>{}</b></span>",
+        "days": "<span color='#a6e3a1'><b>{}</b></span>",
+        "weeks": "<span color='#89dceb'><b>W{}</b></span>",
+        "weekdays": "<span color='#89b4fa'><b>{}</b></span>",
+        "today": "<span color='#f38ba8'><b><u>{}</u></b></span>",
+      },
+    },
+  },
+
+  "custom/wlogout": {
+    "format": "⏻",
+    "on-click": "wlogout -b 5 -T 400 -B 400",
+    "tooltip": "Power Menu",
+  },
+}

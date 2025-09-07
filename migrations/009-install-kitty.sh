@@ -21,6 +21,9 @@ fi
 info "Setting up Kitty configuration..."
 mkdir -p "$HOME/.config/kitty"
 
+info "Applying Catppuccin Mocha theme..."
+kitty +kitten themes --reload-in=all Catppuccin-Mocha
+rm "$HOME/.config/kitty/kitty.conf" # delete the generated one.
 # Link configuration using stow
 config_source="$SCRIPT_DIR/../config"
 if [[ -d "$config_source/kitty" ]]; then
@@ -31,9 +34,5 @@ else
     error "Kitty config directory not found at $config_source/kitty"
     exit 1
 fi
-
-# Apply Catppuccin Mocha theme
-info "Applying Catppuccin Mocha theme..."
-kitty +kitten themes --reload-in=all Catppuccin-Mocha
 
 success "Kitty setup completed successfully!"

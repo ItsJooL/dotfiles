@@ -35,6 +35,13 @@ CATPPUCCIN_MOCHA_CRUST="#11111b"
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [[ ! -d $ZINIT_HOME ]] && mkdir -p $(dirname ${ZINIT_HOME}) && git clone https://github.com/zdharma-continuum/zinit.git $ZINIT_HOME
 source "${ZINIT_HOME}/zinit.zsh"
+
+# =============================================================================
+# EARLY COMPLETION SYSTEM INITIALIZATION
+# =============================================================================
+autoload -Uz compinit
+compinit -C
+
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
@@ -208,7 +215,7 @@ export CARAPACE_BRIDGES="zsh,fzf"
 export CARAPACE_CACHE=1
 
 if [[ -x "$(command -v carapace)" ]]; then
-    zinit ice as'null' lucid wait'2' atload'
+    zinit ice as'null' lucid wait'1' atload'
     _setup_carapace() {
       [[ -n "$_CARAPACE_INIT_DONE" ]] && return
       autoload -Uz compinit && compinit -C
@@ -263,7 +270,7 @@ bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 bindkey "^[[1;5A" up-line-or-history    # ctrl+up
 bindkey "^[[1;5B" down-line-or-history  # ctrl+down
-bindkey "^r" history-incremental-search-backward # ctrl+r (mcfly will override if installed)
+bindkey "^r" history-incremental-search-backward
 
 # Word deletion
 bindkey '^[^?' backward-kill-word       # alt+backspace
@@ -349,18 +356,28 @@ zstyle ':fzf-tab:*' switch-group ',' '.'
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
     fzf-preview 'echo $description'
 
-# Enhanced cd completion with zoxide
-_zoxide_cd_completion() {
-  local word=${words[CURRENT]}
-  local zoxide_results=("${(@f)$(zoxide query -l "$word" 2>/dev/null)}")
-  if [[ ${#zoxide_results} -gt 0 ]]; then
-    for result in $zoxide_results; do
-      compadd -U -X "zoxide" "$result"
-    done
-  fi
-  _path_files -/ -W "$PWD" -g "*(-/)"
+# =============================================================================
+# DEFERRED COMPLETION FUNCTIONS
+# =============================================================================
+# Function to safely register completions after system is ready
+_register_completions() {
+    # Enhanced cd completion with zoxide
+    if command -v zoxide &>/dev/null && command -v compdef &>/dev/null; then
+        _zoxide_cd_completion() {
+          local word=${words[CURRENT]}
+          local zoxide_results=("${(@f)$(zoxide query -l "$word" 2>/dev/null)}")
+          if [[ ${#zoxide_results} -gt 0 ]]; then
+            for result in $zoxide_results; do
+              compadd -U -X "zoxide" "$result"
+            done
+          fi
+          _path_files -/ -W "$PWD" -g "*(-/)"
+        }
+        compdef _zoxide_cd_completion cd
+    fi
+
+    # Any other custom completions can go here
 }
-compdef _zoxide_cd_completion cd
 
 # =============================================================================
 # TOOL INITIALIZATION (After plugins are loaded)
@@ -368,13 +385,42 @@ compdef _zoxide_cd_completion cd
 # Initialize external tools
 [[ -x "$(command -v zoxide)" ]] && eval "$(zoxide init --cmd cd zsh)"
 
-# Initialize mcfly-fzf or mcfly (mcfly-fzf takes priority and will override Ctrl+R)
-if [[ -x "$(command -v mcfly-fzf)" ]]; then
-    eval "$(mcfly-fzf init zsh)"
-    # Ensure mcfly-fzf uses our FZF styling
-    export MCFLY_FZF_OPTS="$FZF_DEFAULT_OPTS --height=60% --layout=reverse"
-elif [[ -x "$(command -v mcfly)" ]]; then
-    eval "$(mcfly init zsh)"
+# McFly configuration
+export MCFLY_KEY_SCHEME=vim
+export MCFLY_FUZZY=2
+export MCFLY_RESULTS=50
+export MCFLY_INTERFACE_VIEW=BOTTOM
+export MCFLY_RESULTS_SORT=LAST_RUN
+export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS --height=60% --layout=reverse --border-label=' History Search '"
+
+if [[ -x "$(command -v mcfly)" ]]; then
+    zinit ice as'null' lucid wait'1' atload'
+        _setup_mcfly() {
+            [[ -n "$_MCFLY_INIT_DONE" ]] && return
+
+            eval "$(mcfly init zsh)"
+            if [[ -x "$(command -v mcfly-fzf)" ]]; then
+                eval "$(mcfly-fzf init zsh)"
+            fi
+
+            _mcfly_fix_keybind() {
+                if command -v mcfly-fzf-history-widget &>/dev/null; then
+                    bindkey "^R" mcfly-fzf-history-widget
+                else
+                    bindkey "^R" history-incremental-search-backward
+                fi
+                precmd_functions=(${precmd_functions:#_mcfly_fix_keybind})
+            }
+
+            (( ${#precmd_functions} )) || precmd_functions=()
+            precmd_functions+=(_mcfly_fix_keybind)
+
+            export _MCFLY_INIT_DONE=1
+        }
+
+        _setup_mcfly
+    '
+    zinit light zdharma-continuum/null
 fi
 
 # =============================================================================
@@ -422,6 +468,21 @@ if [[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]]; then
     sdk "$@"
   }
 fi
+
+# =============================================================================
+# DEFERRED INITIALIZATION
+# =============================================================================
+# Use a precmd hook to register completions after everything is loaded
+_init_completions_once() {
+    # Remove this function from precmd_functions after first run
+    precmd_functions=(${precmd_functions:#_init_completions_once})
+    # Register custom completions
+    _register_completions
+}
+
+# Add to precmd functions
+(( ${#precmd_functions} )) || precmd_functions=()
+precmd_functions+=(_init_completions_once)
 
 # =============================================================================
 # UNTRACKED CUSTOMIZATION

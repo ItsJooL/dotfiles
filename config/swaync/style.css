@@ -1,0 +1,384 @@
+/*
+ * SwayNC Catppuccin Mocha Theme
+ * A beautiful dark theme using Catppuccin Mocha colors
+ */
+
+/* Catppuccin Mocha Colors */
+:root {
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo: #f2cdcd;
+  --ctp-pink: #f5c2e7;
+  --ctp-mauve: #cba6f7;
+  --ctp-red: #f38ba8;
+  --ctp-maroon: #eba0ac;
+  --ctp-peach: #fab387;
+  --ctp-yellow: #f9e2af;
+  --ctp-green: #a6e3a1;
+  --ctp-teal: #94e2d5;
+  --ctp-sky: #89dceb;
+  --ctp-sapphire: #74c7ec;
+  --ctp-blue: #89b4fa;
+  --ctp-lavender: #b4befe;
+  --ctp-text: #cdd6f4;
+  --ctp-subtext1: #bac2de;
+  --ctp-subtext0: #a6adc8;
+  --ctp-overlay2: #9399b2;
+  --ctp-overlay1: #7f849c;
+  --ctp-overlay0: #6c7086;
+  --ctp-surface2: #585b70;
+  --ctp-surface1: #45475a;
+  --ctp-surface0: #313244;
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+}
+
+.control-center {
+  background: rgba(30, 30, 46, 0.95);
+  border-radius: 16px;
+  border: 2px solid var(--ctp-surface0);
+  margin: 2px;
+  padding: 18px 4px 4px 4px;
+  margin-top: 6px;
+  box-shadow: 0 8px 32px rgba(17, 17, 27, 0.7);
+}
+
+.control-center-list, .blank-window {
+  background: transparent;
+}
+
+.control-center-list-placeholder {
+  opacity: 0.8;
+  color: var(--ctp-subtext0);
+}
+
+/*** Widgets ***/
+
+.widget-title {
+  margin: 8px;
+  font-size: 1.5rem;
+  background: transparent;
+  color: var(--ctp-text);
+}
+
+.widget-title > button {
+  font-size: initial;
+  color: var(--ctp-text);
+  text-shadow: none;
+  background: transparent;
+  border: 1px solid rgba(186, 194, 222, 0.3);
+  box-shadow: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.widget-title > button:hover {
+  background: var(--ctp-surface0);
+  border-color: var(--ctp-mauve);
+}
+
+.widget-mpris {
+  font-family: "JetBrains Mono Nerd Font";
+  border: 0px;
+}
+
+.widget-mpris-player {
+  padding: 14px 14px 10px 14px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 14px;
+  margin-right: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--ctp-surface1);
+  box-shadow: none;
+  background: rgba(69, 71, 90, 0.3);
+}
+
+.widget-mpris-player button {
+  background: rgba(69, 71, 90, 0.6);
+  border: 2px solid var(--ctp-surface1);
+  box-shadow: none;
+  text-shadow: none;
+  color: var(--ctp-text);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.widget-mpris-player button:hover {
+  background: var(--ctp-mauve);
+  color: var(--ctp-crust);
+  border-color: var(--ctp-mauve);
+  transition: all 0.2s ease;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.widget-mpris-title {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: var(--ctp-text);
+}
+
+.widget-mpris-subtitle {
+  font-size: 1.1rem;
+  color: var(--ctp-subtext1);
+}
+
+.widget-buttons-grid {
+  font-size: 16px;
+  font-family: "JetBrains Mono Nerd Font";
+  margin: 8px 14px 14px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--ctp-surface1);
+  background: rgba(69, 71, 90, 0.3);
+  padding: 8px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+  padding: 12px;
+  background: var(--ctp-surface0);
+  color: var(--ctp-text);
+  border-radius: 10px;
+  margin: 3px;
+  border: 2px solid var(--ctp-surface1);
+  box-shadow: none;
+  min-width: 120px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+  background: var(--ctp-mauve);
+  color: var(--ctp-crust);
+  border-color: var(--ctp-mauve);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(203, 166, 247, 0.3);
+}
+
+.widget-buttons-grid button image {
+  margin-right: 8px;
+}
+
+.widget-volume,
+.widget-backlight {
+  background-color: transparent;
+  font-size: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border: 0px solid transparent;
+  color: var(--ctp-text);
+}
+
+.widget-volume {
+  background: rgba(69, 71, 90, 0.3);
+  border: 2px solid var(--ctp-surface1);
+  border-radius: 12px;
+  margin: 8px 14px;
+  padding: 12px;
+}
+
+.widget-backlight {
+  background: rgba(69, 71, 90, 0.3);
+  border: 2px solid var(--ctp-surface1);
+  border-radius: 12px;
+  margin: 8px 14px;
+  padding: 12px;
+}
+
+/* Volume widget specific styling */
+.widget-volume .per-app-volume {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ctp-surface1);
+}
+
+.widget-volume .device-selection {
+  margin-bottom: 8px;
+}
+
+.widget-volume .device-selection button {
+  background: var(--ctp-surface0);
+  border: 1px solid var(--ctp-surface1);
+  border-radius: 8px;
+  color: var(--ctp-text);
+  padding: 4px 8px;
+  margin: 2px;
+  transition: all 0.2s ease;
+}
+
+.widget-volume .device-selection button:hover {
+  background: var(--ctp-mauve);
+  color: var(--ctp-crust);
+  border-color: var(--ctp-mauve);
+}
+
+.widget-volume trough,
+.widget-backlight trough {
+  border-radius: 20px;
+  background: var(--ctp-surface0);
+  border: 1px solid var(--ctp-surface0);
+}
+
+.widget-volume trough highlight,
+.widget-backlight trough highlight {
+  padding-top: 1px;
+  background: var(--ctp-mauve);
+  border: 1px solid var(--ctp-mauve);
+  border-radius: 20px;
+}
+
+.widget-volume trough slider,
+.widget-backlight trough slider {
+  padding: 1px;
+  background: var(--ctp-text);
+  border: 1px solid var(--ctp-text);
+  box-shadow: none;
+  border-radius: 50%;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+/* Microphone specific styling */
+.widget-volume .mic-volume {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ctp-surface1);
+}
+
+.widget-volume .mic-volume label {
+  color: var(--ctp-red);
+}
+
+.widget-volume .mic-volume trough highlight {
+  background: var(--ctp-red);
+  border-color: var(--ctp-red);
+}
+
+/* Notifications */
+
+.notification-group-header {
+  background: rgba(69, 71, 90, 0.6);
+  border: 2px solid var(--ctp-surface1);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin: 0 0 8px 0;
+  color: var(--ctp-text);
+  font-weight: bold;
+}
+
+.notification-group-icon {
+  -gtk-icon-transform: scale(0);
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-group {
+  background: none;
+}
+
+.notification-row:focus,
+.notification-row:hover {
+}
+
+.notification-row .notification-background {
+  padding: 6px 12px;
+}
+
+.notification-row .notification-background .close-button {
+  background: var(--ctp-red);
+  color: var(--ctp-crust);
+  border-radius: 50%;
+  margin: 5px 5px 0 0;
+  min-width: 24px;
+  min-height: 24px;
+  border: none;
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.notification-row .notification-background .close-button:hover {
+  background: var(--ctp-maroon);
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.notification-row .notification-background .notification {
+  border-radius: 12px;
+  border: 2px solid var(--ctp-surface1);
+  padding: 0;
+  transition: all 0.2s ease;
+  background: rgba(49, 50, 68, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.notification-row .notification-background .notification:hover {
+  border-color: var(--ctp-mauve);
+  box-shadow: 0 4px 16px rgba(203, 166, 247, 0.2);
+}
+
+.notification-row .notification-background .notification .notification-action,
+.notification-row .notification-background .notification .notification-default-action {
+  padding: 4px;
+  margin: 0;
+  background: transparent;
+  border: none;
+  color: var(--ctp-text);
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.notification-row .notification-background .notification .notification-action:hover,
+.notification-row .notification-background .notification .notification-default-action:hover {
+  background: rgba(203, 166, 247, 0.1);
+  border-radius: 8px;
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .summary {
+  color: var(--ctp-text);
+  font-weight: bold;
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .time {
+  color: var(--ctp-subtext0);
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .body {
+  color: var(--ctp-subtext1);
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .inline-reply .inline-reply-entry {
+  background: rgba(69, 71, 90, 0.6);
+  color: var(--ctp-text);
+  caret-color: var(--ctp-mauve);
+  border: 1px solid var(--ctp-surface1);
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .inline-reply .inline-reply-entry:focus {
+  border-color: var(--ctp-mauve);
+  box-shadow: 0 0 0 2px rgba(203, 166, 247, 0.3);
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .inline-reply .inline-reply-button {
+  background: var(--ctp-surface0);
+  border: 1px solid var(--ctp-surface1);
+  border-radius: 12px;
+  color: var(--ctp-text);
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .inline-reply .inline-reply-button:disabled {
+  color: var(--ctp-overlay0);
+  background: var(--ctp-surface0);
+  opacity: 0.5;
+}
+
+.notification-row .notification-background .notification .notification-default-action .inline-reply .inline-reply-button:hover:not(:disabled) {
+  background: var(--ctp-mauve);
+  color: var(--ctp-crust);
+  border-color: var(--ctp-mauve);
+}

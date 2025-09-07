@@ -1,0 +1,103 @@
+* {
+    font-family: "JetBrainsMono Nerd Font, monospace, sans-serif";
+    font-weight: bold;
+    font-size: 16px;
+}
+
+window#waybar {
+    border-radius: 16px;
+    background: rgba(30, 30, 46, 0.75); /* Base, more transparent */
+    color: #cdd6f4; /* Text */
+}
+
+tooltip {
+    background: rgba(30, 30, 46, 0.85);
+    border-radius: 14px;
+    border: 1px solid #313244; /* Surface0 */
+}
+
+tooltip label {
+    color: #cdd6f4;
+}
+
+#workspaces {
+    border-radius: 16px 24px 24px 16px;
+    margin: 0;
+    background-color: rgba(205, 214, 244, 0.06); /* faint text */
+}
+
+#workspaces button {
+    min-width: 32px;
+    border-radius: 20px;
+    margin: 8px 0;
+    padding: 0 6px;
+    transition: all 0.2s ease;
+    color: #cdd6f4; /* Ensure readable text color */
+}
+
+#workspaces button:not(:last-child) {
+    margin-right: 6px;
+}
+
+#workspaces button:hover {
+    background: rgba(205, 214, 244, 0.12);
+    color: #cdd6f4; /* Keep text readable on hover */
+}
+
+#workspaces button.active,
+#workspaces button.active:hover {
+    background: #89b4fa; /* Blue for active */
+    color: #11111b;
+    min-width: 44px; /* wider active pill */
+    border-radius: 22px;
+    padding: 0 6px;
+}
+
+#clock,
+#battery,
+#network,
+#bluetooth,
+#pulseaudio,
+#custom-notification,
+#idle_inhibitor,
+#workspaces,
+#backlight {
+    padding: 0px 14px;
+    background-color: rgba(205, 214, 244, 0.06); /* lighter transparency */
+}
+
+#tray {
+    padding: 0px 16px;
+    background-color: rgba(205, 214, 244, 0.06);
+    border-radius: 24px;
+    margin-right: 8px;
+}
+
+#network {
+    border-radius: 24px 0 0 24px;
+    padding-left: 24px;
+}
+
+#battery.warning {
+    color: #f9e2af;
+}
+
+#battery.critical {
+    color: #f38ba8;
+}
+
+#pulseaudio {
+    color: #cdd6f4;
+}
+
+#pulseaudio.muted {
+    color: #f38ba8; /* Red when muted */
+}
+
+#custom-wlogout {
+    padding: 0px 16px;
+    background-color: rgba(205, 214, 244, 0.06);
+    border-radius: 0 24px 24px 0;
+    padding-right: 24px;
+    margin-left: 0;
+}
