@@ -1,0 +1,52 @@
+[user]
+    name = Joe O'Leary
+    email = JooL@noreply.codeberg.org
+    
+[core]
+    editor = nvim
+    pager = less -FRX
+    excludesfile = ~/.gitignore_global
+
+[init]
+    defaultBranch = main
+
+[push]
+    default = current
+    autoSetupRemote = true
+
+[pull]
+    rebase = true
+
+[merge]
+    conflictstyle = diff3
+
+[rebase]
+    autoStash = true
+
+[color]
+    ui = auto
+
+[alias]
+    st = status
+    ci = commit
+    co = checkout
+    br = branch
+    lg = log --oneline --graph --decorate --all
+    lol = log --graph --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    last = log -1 HEAD
+    unstage = reset HEAD --
+    amend = commit --amend --no-edit
+    save = !git add -A && git commit -m 'WIP'
+    undo = reset --soft HEAD~1
+
+[includeIf "gitdir:__HOME__/remote-repos/codeberg/"]
+    path = __HOME__/.gitconfig-codeberg
+
+[includeIf "gitdir:__HOME__/remote-repos/github/"]
+    path = __HOME__/.gitconfig-github
+
+[includeIf "gitdir:__HOME__/remote-repos/gitlab/"]
+    path = __HOME__/.gitconfig-gitlab
+
+[includeIf "gitdir:__HOME__/work/repos/"]
+    path = __HOME__/.gitconfig-work
