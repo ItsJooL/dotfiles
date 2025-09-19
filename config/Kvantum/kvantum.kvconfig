@@ -1,0 +1,7 @@
+[General]
+theme=Catppuccin-Mocha-Blue
+
+[Applications]
+# Application-specific overrides can be added here
+# Example:
+# firefox=SomeOtherTheme
