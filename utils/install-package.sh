@@ -89,11 +89,7 @@ install_package() {
                 return 0
             fi
             info "Installing $package on Fedora/RHEL..."
-            if command -v dnf >/dev/null 2>&1; then
-                sudo dnf install -y "$package"
-            else
-                sudo yum install -y "$package"
-            fi
+            sudo dnf install -y "$package"
             ;;
         arch|manjaro|endeavouros)
             if is_installed_arch "$package"; then
