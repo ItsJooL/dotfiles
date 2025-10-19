@@ -28,7 +28,6 @@ CATPPUCCIN_MOCHA_SURFACE0="#313244"
 CATPPUCCIN_MOCHA_BASE="#1e1e2e"
 CATPPUCCIN_MOCHA_MANTLE="#181825"
 CATPPUCCIN_MOCHA_CRUST="#11111b"
-
 # =============================================================================
 # ZINIT SETUP
 # =============================================================================
@@ -61,6 +60,12 @@ update_path() {
 }
 update_path ~/scripts ~/.local/bin /home/linuxbrew/.linuxbrew/bin/
 [[ -x "$(command -v brew)" ]] && eval "$(brew shellenv)"
+
+# Initialize mise early to ensure managed binaries are available
+if command -v mise &>/dev/null; then
+    eval "$(mise activate zsh)"
+fi
+
 [[ -x "$(command -v oh-my-posh)" ]] && eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/omp.toml)"
 
 # =============================================================================

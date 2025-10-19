@@ -1,0 +1,116 @@
+// Zellij configuration
+// Theme: Catppuccin Mocha
+
+// General settings
+default_shell "zsh"
+default_cwd "~"
+pane_frames false
+theme "catppuccin-mocha"
+default_layout "compact"
+mouse_mode true
+scroll_buffer_size 10000
+
+// Keybindings
+keybinds clear-defaults=true {
+    normal {
+        // Session management
+        bind "Ctrl q" { Quit; }
+        bind "Ctrl d" { Detach; }
+        
+        // Pane management
+        bind "Alt h" { MoveFocus "Left"; }
+        bind "Alt l" { MoveFocus "Right"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+        
+        bind "Alt n" { NewPane "Right"; }
+        bind "Alt m" { NewPane "Down"; }
+        bind "Alt x" { CloseFocus; }
+        
+        bind "Alt H" { Resize "Increase Left"; }
+        bind "Alt L" { Resize "Increase Right"; }
+        bind "Alt J" { Resize "Increase Down"; }
+        bind "Alt K" { Resize "Increase Up"; }
+        
+        // Tab management
+        bind "Alt t" { NewTab; }
+        bind "Alt w" { CloseTab; }
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
+        
+        // Other useful bindings
+        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt z" { ToggleFocusFullscreen; }
+        bind "Ctrl a" { SwitchToMode "Tmux"; }
+    }
+    
+    tmux {
+        bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }
+        bind "Escape" { SwitchToMode "Normal"; }
+        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "n" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "m" { NewPane "Down"; SwitchToMode "Normal"; }
+        bind "x" { CloseFocus; SwitchToMode "Normal"; }
+        bind "t" { NewTab; SwitchToMode "Normal"; }
+        bind "w" { CloseTab; SwitchToMode "Normal"; }
+        bind "1" { GoToTab 1; SwitchToMode "Normal"; }
+        bind "2" { GoToTab 2; SwitchToMode "Normal"; }
+        bind "3" { GoToTab 3; SwitchToMode "Normal"; }
+        bind "4" { GoToTab 4; SwitchToMode "Normal"; }
+        bind "5" { GoToTab 5; SwitchToMode "Normal"; }
+        bind "6" { GoToTab 6; SwitchToMode "Normal"; }
+        bind "7" { GoToTab 7; SwitchToMode "Normal"; }
+        bind "8" { GoToTab 8; SwitchToMode "Normal"; }
+        bind "9" { GoToTab 9; SwitchToMode "Normal"; }
+        bind "f" { ToggleFloatingPanes; SwitchToMode "Normal"; }
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+    }
+}
+
+// Catppuccin Mocha theme
+themes {
+    catppuccin-mocha {
+        bg "#1e1e2e"
+        fg "#cdd6f4"
+        red "#f38ba8"
+        green "#a6e3a1"
+        blue "#89b4fa"
+        yellow "#f9e2af"
+        magenta "#f5c2e7"
+        orange "#fab387"
+        cyan "#94e2d5"
+        black "#11111b"
+        white "#cdd6f4"
+    }
+}
+
+// Plugins
+plugins {
+    tab-bar { path "tab-bar"; }
+    status-bar { path "status-bar"; }
+    strider { path "strider"; }
+    compact-bar { path "compact-bar"; }
+}
+
+// UI configuration
+ui {
+    pane_frames {
+        rounded_corners true
+        hide_session_name false
+    }
+}
+
+// Session configuration
+session_serialization false
+serialize_pane_viewport true
+scrollback_lines_to_serialize 10000
