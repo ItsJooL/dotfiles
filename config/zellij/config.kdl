@@ -132,7 +132,6 @@ keybinds clear-defaults=true {
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt f" { ToggleFloatingPanes; }
-        bind "Ctrl o" { SwitchToMode "locked"; }
         bind "Alt i" { MoveTab "left"; }
         bind "Alt n" { NewPane; }
         bind "Alt o" { MoveTab "right"; }
@@ -236,7 +235,10 @@ keybinds clear-defaults=true {
     }
 }
 
+// Plugin aliases - can be used to change the implementation of Zellij
+// changing these requires a restart to take effect
 plugins {
+    about location="zellij:about"
     compact-bar location="zellij:compact-bar"
     configuration location="zellij:configuration"
     filepicker location="zellij:strider" {
@@ -252,7 +254,14 @@ plugins {
     }
 }
 
-
 load_plugins {
 }
+web_client {
+    font "monospace"
+}
 default_mode "normal"
+ 
+// Choose the path to the default shell that zellij will use for opening new panes
+// Default: $SHELL
+// 
+default_shell "zsh"
