@@ -1,3 +1,4 @@
+theme "catppuccin_mocha_blue"
 keybinds clear-defaults=true {
     locked {
         bind "Ctrl g" { SwitchToMode "normal"; }

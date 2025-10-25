@@ -88,7 +88,7 @@ main() {
     # Link configuration
     link_zellij_config
     
-    # Verify installation
+    # Verify installation 
     verify_zellij
     
     success "zellij setup completed successfully!"

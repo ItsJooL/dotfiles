@@ -1,0 +1,156 @@
+themes {
+    catppuccin_mocha_blue {
+        // Catppuccin Mocha color palette
+        // Base colors: #1e1e2e (base), #cdd6f4 (text), #89b4fa (blue)
+        // Supporting colors: #313244 (surface0), #45475a (surface1), #585b70 (surface2)
+        // #6c7086 (overlay0), #7f849c (overlay1), #9399b2 (overlay2), #a6adc8 (subtext1)
+        
+        text_unselected {
+            base 205 214 244    // #cdd6f4 - text
+            background 30 30 46 // #1e1e2e - base
+            emphasis_0 137 180 250  // #89b4fa - blue
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        text_selected {
+            base 30 30 46       // #1e1e2e - base
+            background 137 180 250  // #89b4fa - blue
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 108 112 134  // #6c7086 - overlay0
+        }
+
+        ribbon_selected {
+            base 30 30 46       // #1e1e2e - base
+            background 137 180 250  // #89b4fa - blue
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        ribbon_unselected {
+            base 205 214 244    // #cdd6f4 - text
+            background 49 50 68 // #313244 - surface0
+            emphasis_0 137 180 250  // #89b4fa - blue
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+
+        table_title {
+            base 30 30 46       // #1e1e2e - base
+            background 137 180 250  // #89b4fa - blue
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        table_cell_selected {
+            base 30 30 46       // #1e1e2e - base
+            background 137 180 250  // #89b4fa - blue
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        table_cell_unselected {
+            base 205 214 244    // #cdd6f4 - text
+            background 30 30 46 // #1e1e2e - base
+            emphasis_0 137 180 250  // #89b4fa - blue
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+
+        list_selected {
+            base 30 30 46       // #1e1e2e - base
+            background 137 180 250  // #89b4fa - blue
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        list_unselected {
+            base 205 214 244    // #cdd6f4 - text
+            background 30 30 46 // #1e1e2e - base
+            emphasis_0 137 180 250  // #89b4fa - blue
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+
+        frame_selected {
+            base 137 180 250    // #89b4fa - blue
+            background 0        // transparent
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        frame_highlight {
+            base 69 71 90       // #45475a - surface1 (more subtle than bright blue)
+            background 0        // transparent
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        frame_unselected {
+            base 49 50 68       // #313244 - surface0 (subtle, matches unselected pane border)
+            background 0        // transparent
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+
+        pane_border_selected {
+            base 137 180 250    // #89b4fa - blue
+            background 49 50 68 // #313244 - surface0
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+        pane_border_unselected {
+            base 49 50 68       // #313244 - surface0 (darker, closer to background)
+            background 30 30 46 // #1e1e2e - base
+            emphasis_0 137 180 250  // #89b4fa - blue
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 127 132 156  // #7f849c - overlay1
+        }
+
+        exit_code_success {
+            base 166 227 161    // #a6e3a1 - green
+            background 0        // transparent
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 137 180 250  // #89b4fa - blue
+        }
+        exit_code_error {
+            base 243 139 168    // #f38ba8 - red
+            background 0        // transparent
+            emphasis_0 205 214 244  // #cdd6f4 - text
+            emphasis_1 166 173 200  // #a6adc8 - subtext1
+            emphasis_2 147 153 178  // #9399b2 - overlay2
+            emphasis_3 137 180 250  // #89b4fa - blue
+        }
+
+        multiplayer_user_colors {
+            player_1 243 139 168   // #f38ba8 - red
+            player_2 166 227 161   // #a6e3a1 - green
+            player_3 137 180 250   // #89b4fa - blue
+            player_4 249 226 175   // #f9e2af - yellow
+            player_5 203 166 247   // #cba6f7 - mauve
+            player_6 148 226 213   // #94e2d5 - teal
+            player_7 250 179 135   // #fab387 - peach
+            player_8 242 205 205   // #f2cdcd - flamingo
+            player_9 205 214 244   // #cdd6f4 - text
+            player_10 88 91 112    // #585b70 - surface2
+        }
+    }
+}
