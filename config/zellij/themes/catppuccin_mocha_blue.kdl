@@ -90,7 +90,7 @@ themes {
             emphasis_3 127 132 156  // #7f849c - overlay1
         }
         frame_highlight {
-            base 69 71 90       // #45475a - surface1 (more subtle than bright blue)
+            base 88 91 112      // #585b70 - surface2
             background 0        // transparent
             emphasis_0 205 214 244  // #cdd6f4 - text
             emphasis_1 166 173 200  // #a6adc8 - subtext1
@@ -98,7 +98,7 @@ themes {
             emphasis_3 127 132 156  // #7f849c - overlay1
         }
         frame_unselected {
-            base 49 50 68       // #313244 - surface0 (subtle, matches unselected pane border)
+            base 69 71 90       // #45475a - surface1
             background 0        // transparent
             emphasis_0 205 214 244  // #cdd6f4 - text
             emphasis_1 166 173 200  // #a6adc8 - subtext1
