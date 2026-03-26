@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging utilities
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 info "Stowing wallpapers and profile photo..."
 
@@ -20,7 +21,7 @@ mkdir -p $PROFILE_DESTINATION
 
 if [[ -d "$CONFIG_SOURCE_DIR/backgrounds" ]]; then
     info "Linking backgrounds with stow..."
-    stow -v -R -d "$CONFIG_SOURCE_DIR" -t "$BACKGROUNDS_DESTINATION" backgrounds
+    stow_config -d "$CONFIG_SOURCE_DIR" -t "$BACKGROUNDS_DESTINATION" backgrounds
     success "Backgrounds linked!"
 else
     warn "Backgrounds directory not found, skipping..."
@@ -28,7 +29,7 @@ fi
 
 if [[ -d "$CONFIG_SOURCE_DIR/profile" ]]; then
     info "Linking profile photo with stow..."
-    stow -v -R -d "$CONFIG_SOURCE_DIR" -t "$PROFILE_DESTINATION" profile
+    stow_config -d "$CONFIG_SOURCE_DIR" -t "$PROFILE_DESTINATION" profile
     success "Profile photo linked!"
 else
     warn "Profile directory not found, skipping..."

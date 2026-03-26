@@ -29,26 +29,11 @@ CATPPUCCIN_MOCHA_BASE="#1e1e2e"
 CATPPUCCIN_MOCHA_MANTLE="#181825"
 CATPPUCCIN_MOCHA_CRUST="#11111b"
 # =============================================================================
-# ZINIT SETUP
+# ANTIDOTE SETUP
 # =============================================================================
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-[[ ! -d $ZINIT_HOME ]] && mkdir -p $(dirname ${ZINIT_HOME}) && git clone https://github.com/zdharma-continuum/zinit.git $ZINIT_HOME
-source "${ZINIT_HOME}/zinit.zsh"
-
-# =============================================================================
-# EARLY COMPLETION SYSTEM INITIALIZATION
-# =============================================================================
-autoload -Uz compinit
-compinit -C
-
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust
+ANTIDOTE_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/antidote"
+[[ ! -d $ANTIDOTE_HOME ]] && git clone --depth=1 https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
+source "${ANTIDOTE_HOME}/antidote.zsh"
 
 # =============================================================================
 # PATH & ENV SETUP
@@ -65,6 +50,8 @@ update_path ~/scripts ~/.local/bin /home/linuxbrew/.linuxbrew/bin/
 if command -v mise &>/dev/null; then
     eval "$(mise activate zsh)"
 fi
+
+[[ -x "$(command -v mise)" ]] && source <(mise completion zsh 2>/dev/null)
 
 [[ -x "$(command -v oh-my-posh)" ]] && eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/omp.toml)"
 
@@ -153,10 +140,15 @@ _fzf_comprun() {
 # =============================================================================
 # PLUGINS
 # =============================================================================
-# Autosuggestions with paste magic
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-zinit ice wait'0a' lucid atload'_zsh_autosuggest_start'
-zinit light zsh-users/zsh-autosuggestions
+export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="bg=green,fg=black,bold"
+
+antidote load "${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
+
+# Completion system — after antidote load so all fpath additions are visible
+autoload -Uz compinit && compinit -C
+
+# Paste magic
 autoload -U url-quote-magic bracketed-paste-magic
 zle -N self-insert url-quote-magic
 zle -N bracketed-paste bracketed-paste-magic
@@ -171,76 +163,20 @@ zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete bracketed-paste accept-line push-line-or-edit)
 
-# History substring search (for up/down arrows)
-zinit ice wait'0b' lucid atload'!export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="bg=green,fg=black,bold"'
-zinit light zsh-users/zsh-history-substring-search
-setopt HIST_IGNORE_ALL_DUPS
-
-# Core completions
-zinit light-mode for \
-    blockf \
-        zsh-users/zsh-completions
-
-# Oh-My-Zsh plugins
-zinit wait'1' lucid for \
-    OMZL::git.zsh \
-    OMZP::git \
-    OMZP::sudo \
-    OMZP::extract \
-    OMZP::colored-man-pages \
-    OMZP::kubectl \
-    OMZP::kubectx \
-    OMZP::command-not-found
-
-# FZF integration
-zinit ice lucid wait'0c' as'command' pick'bin/fzf-tmux'
-zinit light junegunn/fzf
-
-zinit ice lucid wait'0c' multisrc'shell/{completion,key-bindings}.zsh' id-as'junegunn/fzf_completions' pick'/dev/null'
-zinit light junegunn/fzf
-
-# FZF-related plugins
-zinit ice wait'1' lucid
-zinit light Aloxaf/fzf-tab
-
-zinit ice wait'1' lucid
-zinit light junegunn/fzf-git.sh
-
-# Syntax highlighting and autopair (load late with proper completion replay)
-zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
-zinit light zdharma-continuum/fast-syntax-highlighting
-
-zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
-zinit light hlissner/zsh-autopair
-
 # =============================================================================
 # CARAPACE CONFIG
 # =============================================================================
-export CARAPACE_BRIDGES="zsh,fzf"
+export CARAPACE_BRIDGES="zsh"
 export CARAPACE_CACHE=1
 
 if [[ -x "$(command -v carapace)" ]]; then
-    zinit ice as'null' lucid wait'1' atload'
     _setup_carapace() {
-      [[ -n "$_CARAPACE_INIT_DONE" ]] && return
-      autoload -Uz compinit && compinit -C
-      zstyle ":completion:*" format "${CATPPUCCIN_MOCHA_YELLOW}%d${RESET_COLOR}"
-      source <(carapace _carapace)
-      export _CARAPACE_INIT_DONE=1
+        precmd_functions=(${precmd_functions:#_setup_carapace})
+        zstyle ":completion:*" format "${CATPPUCCIN_MOCHA_YELLOW}%d${RESET_COLOR}"
+        source <(carapace _carapace)
     }
-
-    _carapace_tmux_fix() {
-      if [[ -n "$TMUX" ]] && [[ -z "$_CARAPACE_TMUX_INIT_DONE" ]]; then
-        _setup_carapace
-        export _CARAPACE_TMUX_INIT_DONE=1
-      fi
-    }
-
     (( ${#precmd_functions} )) || precmd_functions=()
-    precmd_functions+=(_carapace_tmux_fix)
-    _setup_carapace
-    '
-    zinit light zdharma-continuum/null
+    precmd_functions+=(_setup_carapace)
 fi
 
 # =============================================================================
@@ -275,7 +211,6 @@ bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 bindkey "^[[1;5A" up-line-or-history    # ctrl+up
 bindkey "^[[1;5B" down-line-or-history  # ctrl+down
-bindkey "^r" history-incremental-search-backward
 
 # Word deletion
 bindkey '^[^?' backward-kill-word       # alt+backspace
@@ -288,8 +223,23 @@ bindkey '^a' beginning-of-line          # ctrl+a
 bindkey '^e' end-of-line                # ctrl+e
 bindkey '^u' kill-whole-line            # ctrl+u
 
+# Home/End — kitty sends these sequences
+bindkey '^[[H' beginning-of-line        # Home
+bindkey '^[[F' end-of-line              # End
+
+# Edit current command in $EDITOR (nvim)
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line        # ctrl+x ctrl+e
+
+# Shelve current command, run something else, restore on next prompt
+bindkey '^[q' push-line                  # alt+q
+
+# Repeat the previous word/argument at cursor position
+bindkey '\em' copy-prev-shell-word      # alt+m
+
 # FZF file widget
-bindkey '^F' fzf-file-widget
+bindkey '^F' fzf-file-widget            # ctrl+f
 
 # =============================================================================
 # UTILITY FUNCTIONS
@@ -354,7 +304,7 @@ zstyle ':fzf-tab:*' fzf-flags --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:
                             --multi
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --tree --level=1 --color=always $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza --tree --level=1 --color=always $realpath'
+zstyle ':fzf-tab:*' show-group brief
 zstyle ':fzf-tab:*' query-string ''
 zstyle ':fzf-tab:*' continuous-trigger '/'
 zstyle ':fzf-tab:*' switch-group ',' '.'
@@ -362,33 +312,11 @@ zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|
     fzf-preview 'echo $description'
 
 # =============================================================================
-# DEFERRED COMPLETION FUNCTIONS
-# =============================================================================
-# Function to safely register completions after system is ready
-_register_completions() {
-    # Enhanced cd completion with zoxide
-    if command -v zoxide &>/dev/null && command -v compdef &>/dev/null; then
-        _zoxide_cd_completion() {
-          local word=${words[CURRENT]}
-          local zoxide_results=("${(@f)$(zoxide query -l "$word" 2>/dev/null)}")
-          if [[ ${#zoxide_results} -gt 0 ]]; then
-            for result in $zoxide_results; do
-              compadd -U -X "zoxide" "$result"
-            done
-          fi
-          _path_files -/ -W "$PWD" -g "*(-/)"
-        }
-        compdef _zoxide_cd_completion cd
-    fi
-
-    # Any other custom completions can go here
-}
-
-# =============================================================================
 # TOOL INITIALIZATION (After plugins are loaded)
 # =============================================================================
 # Initialize external tools
 [[ -x "$(command -v zoxide)" ]] && eval "$(zoxide init --cmd cd zsh)"
+[[ -x "$(command -v fzf)" ]] && eval "$(fzf --zsh)"
 
 # McFly configuration
 export MCFLY_KEY_SCHEME=vim
@@ -396,87 +324,31 @@ export MCFLY_FUZZY=2
 export MCFLY_RESULTS=50
 export MCFLY_INTERFACE_VIEW=BOTTOM
 export MCFLY_RESULTS_SORT=LAST_RUN
-export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS --height=60% --layout=reverse --border-label=' History Search '"
 
 if [[ -x "$(command -v mcfly)" ]]; then
-    zinit ice as'null' lucid wait'1' atload'
-        _setup_mcfly() {
-            [[ -n "$_MCFLY_INIT_DONE" ]] && return
-
-            eval "$(mcfly init zsh)"
-            if [[ -x "$(command -v mcfly-fzf)" ]]; then
-                eval "$(mcfly-fzf init zsh)"
-            fi
-
-            _mcfly_fix_keybind() {
-                if command -v mcfly-fzf-history-widget &>/dev/null; then
-                    bindkey "^R" mcfly-fzf-history-widget
-                else
-                    bindkey "^R" history-incremental-search-backward
-                fi
-                precmd_functions=(${precmd_functions:#_mcfly_fix_keybind})
-            }
-
-            (( ${#precmd_functions} )) || precmd_functions=()
-            precmd_functions+=(_mcfly_fix_keybind)
-
-            export _MCFLY_INIT_DONE=1
-        }
-
-        _setup_mcfly
-    '
-    zinit light zdharma-continuum/null
+    _setup_mcfly() {
+        precmd_functions=(${precmd_functions:#_setup_mcfly})
+        eval "$(mcfly init zsh)"
+        if [[ -x "$(command -v mcfly-fzf)" ]]; then
+            eval "$(mcfly-fzf init zsh)"
+            bindkey "^R" mcfly-fzf-history-widget
+        else
+            bindkey "^R" history-incremental-search-backward
+        fi
+    }
+    (( ${#precmd_functions} )) || precmd_functions=()
+    precmd_functions+=(_setup_mcfly)
 fi
 
 # =============================================================================
 # ALIASES
 # =============================================================================
-alias ls='eza --color=always --long --git --icons=always'
-alias ll='eza --color=always --long --git --icons=always'
-alias la='eza --color=always --long --git --icons=always --all'
-alias lt='eza --color=always --tree --git --icons=always'
-alias cat='bat --style=auto'
-alias grep='grep --color=auto'
-alias ocat='/bin/cat'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-
-# =============================================================================
-# LAZY LOAD SOME CONFIGURATIONS
-# =============================================================================
-# Lazy load kubectl completion
-if command -v kubectl &>/dev/null; then
-  kubectl() {
-    unfunction kubectl
-    # Load completion
-    source <(command kubectl completion zsh 2>/dev/null)
-    # Re-run original command
-    command kubectl "$@"
-  }
-fi
-
-# =============================================================================
-# DEFERRED INITIALIZATION
-# =============================================================================
-# Use a precmd hook to register completions after everything is loaded
-_init_completions_once() {
-    # Remove this function from precmd_functions after first run
-    precmd_functions=(${precmd_functions:#_init_completions_once})
-    # Register custom completions
-    _register_completions
-}
-
-# Add to precmd functions
-(( ${#precmd_functions} )) || precmd_functions=()
-precmd_functions+=(_init_completions_once)
+[[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
 
 # =============================================================================
 # UNTRACKED CUSTOMIZATION
 # =============================================================================
-[[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
+[[ -f ~/.zsh_aliases_local ]] && source ~/.zsh_aliases_local
 [[ -f ~/.zsh_functions ]] && source ~/.zsh_functions
 [[ -f ~/.zshrc_extension ]] && source ~/.zshrc_extension
-
-# Optional: Load extra config that is not tracked and unique per machine
 [[ -f ~/.zsh_local ]] && source ~/.zsh_local

@@ -1,0 +1,63 @@
+#: mise task configuration for dotfiles project
+#: Run `mise tasks` to see available tasks
+#: Run `mise run <task>` to execute a task
+
+[tools]
+"npm:bats" = "latest"
+shellcheck = "latest"
+
+[tasks.test]
+description = "Run the full test suite inside a Fedora container"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+image_tag="dotfiles-test:latest"
+echo "Building Fedora test image..."
+docker build -t "$image_tag" -f tests/Dockerfile .
+echo "Running tests..."
+docker run --rm "$image_tag"
+"""
+
+[tasks."test:local"]
+description = "Run tests directly on the host (requires bats)"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+bats tests/*.bats
+"""
+
+[tasks."test:build"]
+description = "Build the Fedora test container only (no run)"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+docker build -t dotfiles-test:latest -f tests/Dockerfile .
+"""
+
+[tasks.lint]
+description = "Run shellcheck on all shell scripts"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+echo "Linting migration scripts..."
+shellcheck -x migrations/*.sh
+echo "Linting utility scripts..."
+shellcheck -x utils/*.sh
+echo "Linting install.sh..."
+shellcheck -x install.sh
+echo "All scripts passed shellcheck."
+"""
+
+[tasks.install]
+description = "Run the dotfiles installer (install.sh)"
+run = "./install.sh"
+
+[tasks."docker:shell"]
+description = "Open an interactive shell in the Fedora test container"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+image_tag="dotfiles-test:latest"
+docker build -t "$image_tag" -f tests/Dockerfile .
+docker run --rm -it "$image_tag" bash
+"""

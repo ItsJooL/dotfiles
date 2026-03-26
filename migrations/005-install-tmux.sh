@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source the logging utilities from the 'utils' directory.
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 # --- Main Script Logic ---
 # Check if tmux is already installed.
@@ -22,8 +23,12 @@ fi
 # Set up the tmux configuration directory.
 info "Setting up tmux config..."
 mkdir -p "$HOME/.config/tmux"
-stow -v -R -d "$SCRIPT_DIR/../config" -t "$HOME/.config/tmux" tmux
+stow_config -d "$SCRIPT_DIR/../config" -t "$HOME/.config/tmux" tmux
 
 # Get TPM
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+else
+    info "TPM already installed. Skipping."
+fi
 success "tmux configuration linked!"

@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 
 if command -v nvim &> /dev/null; then
@@ -24,6 +25,6 @@ TARGET_CONFIG_DIR="$HOME/.config/nvim"
 
 mkdir -p "$TARGET_CONFIG_DIR"
 
-stow -v -R -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" nvim
+stow_config -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" nvim
 success "Neovim configuration linked!"
 

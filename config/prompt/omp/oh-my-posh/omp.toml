@@ -1,4 +1,5 @@
 version = 3
+shell_integration = true
 
 [palettes]
 template = 'Mocha'

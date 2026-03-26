@@ -22,9 +22,6 @@ OPTIONAL_DEPS=(
 missing_deps=()
 missing_optional=()
 
-missing_deps=()
-missing_optional=()
-
 check_command() {
     local cmd="$1"
     if ! command -v "$cmd" >/dev/null 2>&1; then

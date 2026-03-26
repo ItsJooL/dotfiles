@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging utilities
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 # Check if kitty is already installed
 if command -v kitty >/dev/null 2>&1; then
@@ -28,7 +29,7 @@ rm "$HOME/.config/kitty/kitty.conf" # delete the generated one.
 config_source="$SCRIPT_DIR/../config"
 if [[ -d "$config_source/kitty" ]]; then
     info "Linking Kitty configuration with stow..."
-    stow -v -R -d "$config_source" -t "$HOME/.config/kitty" kitty
+    stow_config -d "$config_source" -t "$HOME/.config/kitty" kitty
     success "Kitty configuration linked!"
 else
     error "Kitty config directory not found at $config_source/kitty"

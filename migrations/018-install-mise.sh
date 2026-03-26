@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging utilities
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 # mise installation directory
 MISE_DIR="${MISE_DIR:-${HOME}/.local/share/mise}"
@@ -48,22 +49,16 @@ install_mise() {
 # Link mise configuration using stow
 link_mise_config() {
     info "Linking mise configuration..."
-    
-    # Create target directory
-    mkdir -p "$HOME"
-    
-    # Link configuration using stow
-    stow -v -R -d "$SCRIPT_DIR/../config" -t "$HOME" mise
+
+    mkdir -p "$HOME/.config/mise"
+    stow_config -d "$SCRIPT_DIR/../config" -t "$HOME" mise
     success "mise configuration linked!"
 }
 
-# Install tools from .tool-versions
+# Install tools from config.toml
 install_tools() {
-    info "Installing tools from .tool-versions..."
-    
-    # Change to home directory where .tool-versions is linked
-    cd "$HOME"
-    
+    info "Installing tools from mise config..."
+
     # Install all tools
     if mise install; then
         success "All tools installed successfully"
@@ -95,6 +90,14 @@ verify_installations() {
         "mcfly:mcfly --version"
         "carapace:carapace --version"
         "zellij:zellij --version"
+        "gh:gh --version"
+        "lazygit:lazygit --version"
+        "k9s:k9s version --short"
+        "kubectl:kubectl version --client"
+        "kubectx:kubectx --help"
+        "kustomize:kustomize version"
+        "helm:helm version --short"
+        "buf:buf --version"
     )
     
     local failed_tools=()
@@ -149,6 +152,7 @@ main() {
     info "  • Go 1.25.3"
     info "  • Zellij"
     info "  • Shell utilities: ripgrep, fd, eza, fzf, zoxide, mcfly, carapace"
+    info "  • DevOps: gh, lazygit, k9s, kubectl, kubectx, kustomize, helm, buf"
 }
 
 main

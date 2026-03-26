@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source the logging utilities from the 'utils' directory.
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 # --- Main Script Logic ---
 
@@ -33,5 +34,5 @@ info "Setting up Oh My Posh config..."
 SOURCE_CONFIG_DIR="$SCRIPT_DIR/../config/prompt/omp"
 TARGET_CONFIG_DIR="$HOME/.config"
 mkdir -p "$TARGET_CONFIG_DIR/oh-my-posh"
-stow -v -R -d "$SOURCE_CONFIG_DIR/.." -t "$TARGET_CONFIG_DIR" omp
+stow_config -d "$SOURCE_CONFIG_DIR/.." -t "$TARGET_CONFIG_DIR" omp
 success "Oh My Posh configuration linked!"

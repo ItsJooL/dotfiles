@@ -1,0 +1,497 @@
+#!/usr/bin/env zsh
+# Debug version of .zshrc with timing for each section
+
+_t0=$(date +%s%N 2>/dev/null || date +%s)
+_section_start=$_t0
+
+_timing_report() {
+    local label="$1"
+    local now
+    now=$(date +%s%N 2>/dev/null || echo "0")
+    if [[ "$now" != "0" && "$_section_start" != "0" ]]; then
+        local elapsed=$(( (now - _section_start) / 1000000 ))
+        printf "TIMING: %-50s %dms\n" "$label" "$elapsed"
+    else
+        echo "TIMING: $label (no nanosecond timer)"
+    fi
+    _section_start=$now
+}
+
+# =============================================================================
+# THEME COLORS - CATPPUCCIN MOCHA
+# =============================================================================
+CATPPUCCIN_MOCHA_ROSEWATER="#f5e0dc"
+CATPPUCCIN_MOCHA_FLAMINGO="#f2cdcd"
+CATPPUCCIN_MOCHA_PINK="#f5c2e7"
+CATPPUCCIN_MOCHA_MAUVE="#cba6f7"
+CATPPUCCIN_MOCHA_RED="#f38ba8"
+CATPPUCCIN_MOCHA_MAROON="#eba0ac"
+CATPPUCCIN_MOCHA_PEACH="#fab387"
+CATPPUCCIN_MOCHA_YELLOW="#f9e2af"
+CATPPUCCIN_MOCHA_GREEN="#a6e3a1"
+CATPPUCCIN_MOCHA_TEAL="#94e2d5"
+CATPPUCCIN_MOCHA_SKY="#89dceb"
+CATPPUCCIN_MOCHA_SAPPHIRE="#74c7ec"
+CATPPUCCIN_MOCHA_BLUE="#89b4fa"
+CATPPUCCIN_MOCHA_LAVENDER="#b4befe"
+CATPPUCCIN_MOCHA_TEXT="#cdd6f4"
+CATPPUCCIN_MOCHA_SUBTEXT1="#bac2de"
+CATPPUCCIN_MOCHA_SUBTEXT0="#a6adc8"
+CATPPUCCIN_MOCHA_OVERLAY2="#9399b2"
+CATPPUCCIN_MOCHA_OVERLAY1="#7f849c"
+CATPPUCCIN_MOCHA_OVERLAY0="#6c7086"
+CATPPUCCIN_MOCHA_SURFACE2="#585b70"
+CATPPUCCIN_MOCHA_SURFACE1="#45475a"
+CATPPUCCIN_MOCHA_SURFACE0="#313244"
+CATPPUCCIN_MOCHA_BASE="#1e1e2e"
+CATPPUCCIN_MOCHA_MANTLE="#181825"
+CATPPUCCIN_MOCHA_CRUST="#11111b"
+_timing_report "Theme colors defined"
+
+# =============================================================================
+# ZINIT SETUP
+# =============================================================================
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+echo "DEBUG: ZINIT_HOME=$ZINIT_HOME"
+echo "DEBUG: zinit.git exists: $([[ -d $ZINIT_HOME ]] && echo YES || echo NO)"
+
+[[ ! -d $ZINIT_HOME ]] && mkdir -p $(dirname ${ZINIT_HOME}) && git clone https://github.com/zdharma-continuum/zinit.git $ZINIT_HOME
+source "${ZINIT_HOME}/zinit.zsh"
+_timing_report "zinit sourced"
+
+# =============================================================================
+# EARLY COMPLETION SYSTEM INITIALIZATION
+# =============================================================================
+autoload -Uz compinit
+compinit -C
+_timing_report "compinit"
+
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
+_timing_report "zinit annexes loaded"
+
+# =============================================================================
+# PATH & ENV SETUP
+# =============================================================================
+update_path() {
+    for dir in "$@"; do
+        [[ -d $dir ]] && export PATH=$dir:$PATH
+    done
+}
+update_path ~/scripts ~/.local/bin /home/linuxbrew/.linuxbrew/bin/
+[[ -x "$(command -v brew)" ]] && eval "$(brew shellenv)"
+
+if command -v mise &>/dev/null; then
+    eval "$(mise activate zsh)"
+fi
+echo "DEBUG: mise available: $([[ -x "$(command -v mise)" ]] && echo YES || echo NO)"
+_timing_report "PATH & env setup (incl mise activate)"
+
+[[ -x "$(command -v oh-my-posh)" ]] && eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/omp.toml)"
+_timing_report "oh-my-posh init (skipped if not installed)"
+
+# =============================================================================
+# SHELL ENVIRONMENT
+# =============================================================================
+export EDITOR=$(command -v nvim &>/dev/null && echo nvim || (command -v vim &>/dev/null && echo vim || echo vi))
+export SUDO_EDITOR="$EDITOR"
+export TERMINAL='kitty'
+export PAGER='less'
+export LESS='-F -g -i -M -R -S -w -X -z-4 -~ --mouse'
+export LESS_TERMCAP_mb=$'\E[6m'
+export LESS_TERMCAP_md=$'\E[34m'
+export LESS_TERMCAP_us=$'\E[4;32m'
+export LESS_TERMCAP_so=$'\E[0m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export MANPAGER='nvim +Man!'
+export LANG='en_US.UTF-8'
+export LC_ALL='en_US.UTF-8'
+export WORDCHARS='~!#$%^&*(){}[]<>?.+;'
+export PROMPT_EOL_MARK=''
+export GPG_TTY=$(tty)
+_timing_report "shell environment vars"
+
+# =============================================================================
+# HISTORY SETTINGS
+# =============================================================================
+HISTSIZE=290000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+setopt extended_history \
+    hist_expire_dups_first \
+    hist_ignore_all_dups \
+    hist_ignore_space \
+    hist_verify \
+    inc_append_history \
+    share_history
+_timing_report "history settings"
+
+# =============================================================================
+# SHELL OPTIONS
+# =============================================================================
+setopt always_to_end \
+    hash_list_all \
+    completealiases \
+    complete_in_word \
+    nocorrect \
+    list_ambiguous \
+    nolisttypes \
+    listpacked \
+    automenu \
+    interactivecomments \
+    autocd
+
+export QUOTING_STYLE=literal
+_timing_report "shell options"
+
+# =============================================================================
+# FZF CONFIGURATION
+# =============================================================================
+export FZF_DEFAULT_OPTS="--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 --color=selected-bg:#45475a,selected-fg:#cdd6f4 --color=gutter:#1e1e2e,border:#89b4fa --border=rounded --multi"
+export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git --type f"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --theme=\"Catppuccin Mocha\" --line-range :500 {}' --preview-window=right:60%:wrap"
+export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200' --preview-window=right:60%:wrap"
+export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --height=7"
+
+_fzf_compgen_dir() {
+    fd --type=d --hidden --exclude .git . "$1"
+}
+_fzf_comprun() {
+  local command=$1
+  shift
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo $'{}"         "$@" ;;
+    ssh)          fzf --preview 'awk -v HOST={} -f ~/.ssh/bin/host2conf.awk ~/.ssh/config'  "$@" ;;
+    *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
+  esac
+}
+_timing_report "FZF configuration"
+
+# =============================================================================
+# PLUGINS
+# =============================================================================
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+zinit ice wait'0a' lucid atload'_zsh_autosuggest_start'
+zinit light zsh-users/zsh-autosuggestions
+autoload -U url-quote-magic bracketed-paste-magic
+zle -N self-insert url-quote-magic
+zle -N bracketed-paste bracketed-paste-magic
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic
+}
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete bracketed-paste accept-line push-line-or-edit)
+
+zinit ice wait'0b' lucid atload'!export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="bg=green,fg=black,bold"'
+zinit light zsh-users/zsh-history-substring-search
+setopt HIST_IGNORE_ALL_DUPS
+
+zinit light-mode for \
+    blockf \
+        zsh-users/zsh-completions
+
+zinit wait'1' lucid for \
+    OMZL::git.zsh \
+    OMZP::git \
+    OMZP::sudo \
+    OMZP::extract \
+    OMZP::colored-man-pages \
+    OMZP::kubectl \
+    OMZP::kubectx \
+    OMZP::command-not-found
+
+zinit ice lucid wait'0c' as'command' pick'bin/fzf-tmux'
+zinit light junegunn/fzf
+
+zinit ice lucid wait'0c' multisrc'shell/{completion,key-bindings}.zsh' id-as'junegunn/fzf_completions' pick'/dev/null'
+zinit light junegunn/fzf
+
+zinit ice wait'1' lucid
+zinit light Aloxaf/fzf-tab
+
+zinit ice wait'1' lucid
+zinit light junegunn/fzf-git.sh
+
+zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
+zinit light zdharma-continuum/fast-syntax-highlighting
+
+zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
+zinit light hlissner/zsh-autopair
+_timing_report "All plugins registered with zinit"
+
+# =============================================================================
+# CARAPACE CONFIG
+# =============================================================================
+export CARAPACE_BRIDGES="zsh,fzf"
+export CARAPACE_CACHE=1
+echo "DEBUG: carapace available: $([[ -x "$(command -v carapace)" ]] && echo YES || echo NO)"
+if [[ -x "$(command -v carapace)" ]]; then
+    echo "DEBUG: carapace block would execute"
+    zinit ice as'null' lucid wait'1' atload'
+    _setup_carapace() {
+      [[ -n "$_CARAPACE_INIT_DONE" ]] && return
+      autoload -Uz compinit && compinit -C
+      zstyle ":completion:*" format "${CATPPUCCIN_MOCHA_YELLOW}%d${RESET_COLOR}"
+      source <(carapace _carapace)
+      export _CARAPACE_INIT_DONE=1
+    }
+    _carapace_tmux_fix() {
+      if [[ -n "$TMUX" ]] && [[ -z "$_CARAPACE_TMUX_INIT_DONE" ]]; then
+        _setup_carapace
+        export _CARAPACE_TMUX_INIT_DONE=1
+      fi
+    }
+    (( ${#precmd_functions} )) || precmd_functions=()
+    precmd_functions+=(_carapace_tmux_fix)
+    _setup_carapace
+    '
+    zinit light zdharma-continuum/null
+else
+    echo "DEBUG: carapace NOT installed, skipping carapace zinit block"
+fi
+_timing_report "carapace config"
+
+# =============================================================================
+# KEYBINDINGS
+# =============================================================================
+bindkey -e
+bindkey "^[[D" backward-char
+bindkey "^[[C" forward-char
+bindkey "^[[A" history-substring-search-up      2>/dev/null || bindkey "^[[A" up-line-or-history
+bindkey "^[[B" history-substring-search-down    2>/dev/null || bindkey "^[[B" down-line-or-history
+bindkey '^[[3~' delete-char
+bindkey '^?' backward-delete-char
+bindkey "^[[1;3C" forward-word
+bindkey "^[[1;3D" backward-word
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+bindkey '\eb' backward-word
+bindkey '\ef' forward-word
+bindkey '\ee' end-of-line
+bindkey '\ea' beginning-of-line
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+bindkey "^[[1;5A" up-line-or-history
+bindkey "^[[1;5B" down-line-or-history
+bindkey "^r" history-incremental-search-backward
+bindkey '^[^?' backward-kill-word
+bindkey '^[[3;3~' kill-word
+bindkey '^w' backward-kill-word
+bindkey '^k' kill-line
+bindkey '^a' beginning-of-line
+bindkey '^e' end-of-line
+bindkey '^u' kill-whole-line
+bindkey '^F' fzf-file-widget 2>/dev/null || echo "DEBUG: fzf-file-widget not yet available for ^F binding"
+_timing_report "keybindings set"
+
+# =============================================================================
+# UTILITY FUNCTIONS
+# =============================================================================
+_zoxide_fzf_widget() {
+  local selected_dir
+  selected_dir=$(zoxide query -l | fzf --preview 'eza --tree --level=1 --color=always {}')
+  if [[ -n "$selected_dir" ]]; then
+    BUFFER="cd ${(q)selected_dir}"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N _zoxide_fzf_widget
+bindkey '^[z' _zoxide_fzf_widget
+
+function fg-fzf() {
+  job="$(jobs | fzf -0 -1 | sed -E 's/\[(.+)\].*/\1/')" && echo '' && fg %$job
+}
+function fancy-ctrl-z () {
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER=" fg-fzf"
+    zle accept-line -w
+  else
+    zle push-input -w
+    zle clear-screen -w
+  fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
+_timing_report "utility functions & extra bindings"
+
+# =============================================================================
+# COMPLETION STYLING
+# =============================================================================
+fpath+=~/.zfunc
+zstyle ':completion:*' completer _expand _complete _ignored _approximate
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+zstyle ':completion:*:descriptions' format '-- %d --'
+zstyle ':completion:*:processes' command 'ps -au$USER'
+zstyle ':completion:complete:*:options' sort false
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':fzf-tab:*' fzf-command fzf
+zstyle ':fzf-tab:*' fzf-flags --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+                            --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+                            --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+                            --color=gutter:#1e1e2e,border:#89b4fa \
+                            --height=60% --layout=reverse --border=rounded \
+                            --border-label="  Selection  " --border-label-pos=2 \
+                            --preview-window=right:60%:wrap --multi
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --tree --level=1 --color=always $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza --tree --level=1 --color=always $realpath'
+zstyle ':fzf-tab:*' query-string ''
+zstyle ':fzf-tab:*' continuous-trigger '/'
+zstyle ':fzf-tab:*' switch-group ',' '.'
+zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
+    fzf-preview 'echo $description'
+_timing_report "completion styling"
+
+# =============================================================================
+# DEFERRED COMPLETION FUNCTIONS
+# =============================================================================
+_register_completions() {
+    if command -v zoxide &>/dev/null && command -v compdef &>/dev/null; then
+        _zoxide_cd_completion() {
+          local word=${words[CURRENT]}
+          local zoxide_results=("${(@f)$(zoxide query -l "$word" 2>/dev/null)}")
+          if [[ ${#zoxide_results} -gt 0 ]]; then
+            for result in $zoxide_results; do
+              compadd -U -X "zoxide" "$result"
+            done
+          fi
+          _path_files -/ -W "$PWD" -g "*(-/)"
+        }
+        compdef _zoxide_cd_completion cd
+    fi
+}
+_timing_report "deferred completion functions defined"
+
+# =============================================================================
+# TOOL INITIALIZATION
+# =============================================================================
+echo "DEBUG: zoxide available: $([[ -x "$(command -v zoxide)" ]] && echo YES || echo NO)"
+[[ -x "$(command -v zoxide)" ]] && eval "$(zoxide init --cmd cd zsh)"
+
+export MCFLY_KEY_SCHEME=vim
+export MCFLY_FUZZY=2
+export MCFLY_RESULTS=50
+export MCFLY_INTERFACE_VIEW=BOTTOM
+export MCFLY_RESULTS_SORT=LAST_RUN
+export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS --height=60% --layout=reverse --border-label=' History Search '"
+
+echo "DEBUG: mcfly available: $([[ -x "$(command -v mcfly)" ]] && echo YES || echo NO)"
+if [[ -x "$(command -v mcfly)" ]]; then
+    echo "DEBUG: mcfly block would execute"
+    zinit ice as'null' lucid wait'1' atload'
+        _setup_mcfly() {
+            [[ -n "$_MCFLY_INIT_DONE" ]] && return
+            eval "$(mcfly init zsh)"
+            if [[ -x "$(command -v mcfly-fzf)" ]]; then
+                eval "$(mcfly-fzf init zsh)"
+            fi
+            _mcfly_fix_keybind() {
+                if command -v mcfly-fzf-history-widget &>/dev/null; then
+                    bindkey "^R" mcfly-fzf-history-widget
+                else
+                    bindkey "^R" history-incremental-search-backward
+                fi
+                precmd_functions=(${precmd_functions:#_mcfly_fix_keybind})
+            }
+            (( ${#precmd_functions} )) || precmd_functions=()
+            precmd_functions+=(_mcfly_fix_keybind)
+            export _MCFLY_INIT_DONE=1
+        }
+        _setup_mcfly
+    '
+    zinit light zdharma-continuum/null
+else
+    echo "DEBUG: mcfly NOT installed, skipping mcfly zinit block"
+fi
+_timing_report "tool initialization (zoxide, mcfly)"
+
+# =============================================================================
+# ALIASES
+# =============================================================================
+alias ls='eza --color=always --long --git --icons=always'
+alias ll='eza --color=always --long --git --icons=always'
+alias la='eza --color=always --long --git --icons=always --all'
+alias lt='eza --color=always --tree --git --icons=always'
+alias cat='bat --style=auto'
+alias grep='grep --color=auto'
+alias ocat='/bin/cat'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+_timing_report "aliases"
+
+# =============================================================================
+# LAZY LOAD SOME CONFIGURATIONS
+# =============================================================================
+echo "DEBUG: kubectl available: $([[ -x "$(command -v kubectl)" ]] && echo YES || echo NO)"
+if command -v kubectl &>/dev/null; then
+  kubectl() {
+    unfunction kubectl
+    source <(command kubectl completion zsh 2>/dev/null)
+    command kubectl "$@"
+  }
+  echo "DEBUG: kubectl lazy-load wrapper defined"
+else
+    echo "DEBUG: kubectl NOT installed, lazy-load wrapper NOT defined"
+fi
+_timing_report "lazy-load configurations"
+
+# =============================================================================
+# DEFERRED INITIALIZATION
+# =============================================================================
+_init_completions_once() {
+    precmd_functions=(${precmd_functions:#_init_completions_once})
+    _register_completions
+}
+(( ${#precmd_functions} )) || precmd_functions=()
+precmd_functions+=(_init_completions_once)
+_timing_report "deferred initialization hooks"
+
+# =============================================================================
+# UNTRACKED CUSTOMIZATION
+# =============================================================================
+[[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
+[[ -f ~/.zsh_functions ]] && source ~/.zsh_functions
+[[ -f ~/.zshrc_extension ]] && source ~/.zshrc_extension
+[[ -f ~/.zsh_local ]] && source ~/.zsh_local
+_timing_report "untracked customizations"
+
+# Final summary
+echo ""
+echo "=== TIMING SUMMARY COMPLETE ==="
+_now=$(date +%s%N 2>/dev/null || echo "0")
+if [[ "$_now" != "0" && "$_t0" != "0" ]]; then
+    _total=$(( (_now - _t0) / 1000000 ))
+    echo "TOTAL startup time: ${_total}ms"
+fi
+
+echo ""
+echo "=== BINDKEY FINAL STATE ==="
+bindkey
+
+echo ""
+echo "=== precmd_functions registered ==="
+print -l "${precmd_functions[@]}" 2>/dev/null
+
+echo ""
+echo "=== zstyle completion entries count ==="
+zstyle -L ':completion:*' 2>/dev/null | wc -l

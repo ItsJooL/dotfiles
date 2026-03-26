@@ -6,8 +6,18 @@ STATE_DIR="$HOME/.dotfiles-migration-state"
 MIGRATIONS_DIR="$SCRIPT_DIR/migrations"
 UTILS_DIR="$SCRIPT_DIR/utils"
 
-# Source logging utilities
+export DOTFILES_FORCE=0
+for arg in "$@"; do
+    case "$arg" in
+        --force) export DOTFILES_FORCE=1 ;;
+    esac
+done
+
 source "$UTILS_DIR/log.sh"
+
+if [[ "$DOTFILES_FORCE" == "1" ]]; then
+    warn "Force mode enabled — stow will adopt existing files"
+fi
 
 # Check dependencies first
 log "Checking dependencies..."

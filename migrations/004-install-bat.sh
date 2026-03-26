@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source the logging utilities from the 'utils' directory.
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 # --- Main Script Logic ---
 
@@ -33,7 +34,7 @@ TARGET_CONFIG_DIR="$HOME/.config/bat"
 
 mkdir -p "$TARGET_CONFIG_DIR"
 
-stow -v -R -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" bat
+stow_config -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" bat
 info "Building bat cache..."
 bat cache --build
 success "Bat configuration linked!"

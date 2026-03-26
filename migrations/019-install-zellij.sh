@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging utilities
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 # Check if zellij is already available
 check_zellij_available() {
@@ -25,7 +26,7 @@ link_zellij_config() {
     mkdir -p "$TARGET_CONFIG_DIR"
     
     # Link configuration using stow
-    stow -v -R -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" zellij
+    stow_config -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" zellij
     success "zellij configuration linked!"
 }
 

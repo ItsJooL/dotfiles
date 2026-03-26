@@ -39,14 +39,14 @@
     save = !git add -A && git commit -m 'WIP'
     undo = reset --soft HEAD~1
 
-[includeIf "gitdir:__HOME__/remote-repos/codeberg/"]
-    path = __HOME__/.gitconfig-codeberg
+[includeIf "gitdir:~/remote-repos/codeberg/"]
+    path = ~/.gitconfig-codeberg
 
-[includeIf "gitdir:__HOME__/remote-repos/github/"]
-    path = __HOME__/.gitconfig-github
+[includeIf "gitdir:~/remote-repos/github/"]
+    path = ~/.gitconfig-github
 
-[includeIf "gitdir:__HOME__/remote-repos/gitlab/"]
-    path = __HOME__/.gitconfig-gitlab
+[includeIf "gitdir:~/remote-repos/gitlab/"]
+    path = ~/.gitconfig-gitlab
 
-[includeIf "gitdir:__HOME__/work/repos/"]
-    path = __HOME__/.gitconfig-work
+[includeIf "gitdir:~/work/repos/"]
+    path = ~/.gitconfig-work

@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging utilities
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 if command -v rofi &> /dev/null; then
     info "rofi is already installed. Skipping installation."
@@ -23,6 +24,6 @@ TARGET_CONFIG_DIR="$HOME/.config/rofi"
 
 mkdir -p "$TARGET_CONFIG_DIR"
 
-stow -v -R -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" rofi
+stow_config -d "$SCRIPT_DIR/../config" -t "$TARGET_CONFIG_DIR" rofi
 
 success "rofi configuration linked!"

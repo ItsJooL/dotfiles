@@ -1,0 +1,38 @@
+# =============================================================================
+# SHELL ALIASES
+# =============================================================================
+
+# File listing
+alias ls='eza --color=always --git --icons=always'
+alias ll='eza --color=always --long --git --icons=always'
+alias la='eza --color=always --long --git --icons=always --all'
+alias lt='eza --color=always --tree --git --icons=always'
+
+# Better defaults
+alias cat='bat --style=auto'
+alias grep='grep --color=auto'
+alias ocat='/bin/cat'
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# kubectl
+alias k='kubectl'
+alias kaf='kubectl apply -f'
+alias kex='kubectl exec -it'
+alias klo='kubectl logs -f'
+alias kg='kubectl get'
+alias kgp='kubectl get pods'
+alias kgpa='kubectl get pods --all-namespaces'
+alias kgs='kubectl get services'
+alias kgd='kubectl get deployments'
+alias kgn='kubectl get nodes'
+alias kgns='kubectl get namespaces'
+alias kdp='kubectl describe pod'
+alias kds='kubectl describe service'
+alias krm='kubectl delete'
+alias kuc='kubectl config use-context'
+alias kgc='kubectl config get-contexts'
+alias kns='kubectl config set-context --current --namespace'

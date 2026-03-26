@@ -1,0 +1,31 @@
+[tools]
+# Language runtimes
+java = "temurin-21"
+maven = "latest"
+gradle = "latest"
+node = "22"
+golang = "1.25.3"
+
+# Shell utilities
+"github:BurntSushi/ripgrep" = "latest"
+"github:sharkdp/fd" = "latest"
+"github:eza-community/eza" = "latest"
+"github:junegunn/fzf" = "latest"
+"github:ajeetdsouza/zoxide" = "latest"
+"github:cantino/mcfly" = "latest"
+"github:bnprks/mcfly-fzf" = "latest"
+"github:carapace-sh/carapace-bin" = "latest"
+"github:jdx/usage" = "latest"
+"github:zellij-org/zellij" = "latest"
+
+# DevOps / Kubernetes
+gh = "latest"
+lazygit = "latest"
+k9s = "latest"
+kubectl = "latest"
+kubectx = "latest"
+kustomize = "latest"
+helm = "latest"
+buf = "latest"
+"github:pythops/impala" = "0.7.4"
+lua = "5.4"

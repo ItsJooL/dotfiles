@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 SOURCE_CONFIG_DIR="$SCRIPT_DIR/../config/zsh"
 TARGET_CONFIG_DIR="$HOME"
@@ -17,7 +18,7 @@ success "Zsh installed successfully!"
 
 info "Linking Zsh configuration with Stow..."
 mkdir -p "$TARGET_CONFIG_DIR"
-stow -v -R -d "$SOURCE_CONFIG_DIR/.." -t "$TARGET_CONFIG_DIR" zsh
+stow_config -d "$SOURCE_CONFIG_DIR/.." -t "$TARGET_CONFIG_DIR" zsh
 success "Zsh configuration linked successfully!"
 
 # Set Zsh as default shell if possible

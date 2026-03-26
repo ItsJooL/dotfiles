@@ -7,6 +7,7 @@ UTILS_DIR="$(dirname "$SCRIPT_DIR")/utils"
 
 # Source logging utilities
 source "$UTILS_DIR/log.sh"
+source "$UTILS_DIR/stow-config.sh"
 
 # Set up the theme and configuration directory.
 info "Setting up Git config..."
@@ -14,7 +15,4 @@ SOURCE_CONFIG_DIR="$SCRIPT_DIR/../config/"
 TARGET_CONFIG_DIR="$HOME/"
 
 
-stow -v -R -d "$SOURCE_CONFIG_DIR/" -t "$TARGET_CONFIG_DIR" git
-
-
-sed -i "s|__HOME__|$HOME|g" "$HOME/.gitconfig"
+stow_config -d "$SOURCE_CONFIG_DIR/" -t "$TARGET_CONFIG_DIR" git
