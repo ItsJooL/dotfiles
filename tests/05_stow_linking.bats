@@ -53,6 +53,7 @@ teardown() {
     run stow -v -R -d "$CONFIG_DIR" -t "$HOME/.config/kitty" kitty
     assert_success
     [ -L "$HOME/.config/kitty/kitty.conf" ]
+    [ -L "$HOME/.config/kitty/current-theme.conf" ]
 }
 
 @test "stow links zellij config to ~/.config/zellij" {

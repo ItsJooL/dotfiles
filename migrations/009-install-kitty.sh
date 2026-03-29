@@ -21,13 +21,16 @@ fi
 # Setup kitty configuration
 info "Setting up Kitty configuration..."
 mkdir -p "$HOME/.config/kitty"
-
-info "Applying Catppuccin Mocha theme..."
-kitty +kitten themes --reload-in=all Catppuccin-Mocha
-rm "$HOME/.config/kitty/kitty.conf" # delete the generated one.
 # Link configuration using stow
 config_source="$SCRIPT_DIR/../config"
 if [[ -d "$config_source/kitty" ]]; then
+    for managed_file in kitty.conf current-theme.conf; do
+        managed_path="$HOME/.config/kitty/$managed_file"
+        if [[ -e "$managed_path" && ! -L "$managed_path" ]]; then
+            info "Removing existing Kitty-managed file: $managed_path"
+            rm -f "$managed_path"
+        fi
+    done
     info "Linking Kitty configuration with stow..."
     stow_config -d "$config_source" -t "$HOME/.config/kitty" kitty
     success "Kitty configuration linked!"

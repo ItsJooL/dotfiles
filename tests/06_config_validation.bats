@@ -186,6 +186,16 @@ load 'test_helper'
     [ -f "$CONFIG_DIR/kitty/kitty.conf" ]
 }
 
+@test "kitty current-theme.conf exists" {
+    [ -f "$CONFIG_DIR/kitty/current-theme.conf" ]
+}
+
+@test "kitty.conf includes current-theme.conf exactly once" {
+    run grep -c '^include current-theme\.conf$' "$CONFIG_DIR/kitty/kitty.conf"
+    assert_success
+    assert_output "1"
+}
+
 # --- Neovim ---
 
 @test "neovim init.lua exists" {
