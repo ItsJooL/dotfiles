@@ -247,6 +247,11 @@ load 'test_helper'
     done
 }
 
+@test "mise config does not manage cliphist" {
+    run grep -q 'github:sentriz/cliphist' "$CONFIG_DIR/mise/.config/mise/config.toml"
+    assert_failure
+}
+
 @test "mise config includes devops tools (gh, kubectl, helm)" {
     for tool in gh kubectl helm; do
         run grep -q "^$tool" "$CONFIG_DIR/mise/.config/mise/config.toml"
@@ -262,6 +267,32 @@ load 'test_helper'
 
 @test "hyprland config uses modular imports" {
     run grep -q 'source' "$CONFIG_DIR/hypr/hyprland.conf"
+    assert_success
+}
+
+@test "cliphist migration installs cliphist and wl-clipboard" {
+    for package in cliphist wl-clipboard; do
+        run grep -q "\"\\$UTILS_DIR/install-package.sh\" $package" "$MIGRATIONS_DIR/021-install-cliphist.sh"
+        assert_success
+    done
+}
+
+@test "hypr startup launches cliphist watcher" {
+    run grep -q 'exec-once = wl-paste --watch cliphist store' "$CONFIG_DIR/hypr/startup.conf"
+    assert_success
+}
+
+@test "clipboard keybind uses the rofi clipboard script" {
+    run grep -q 'bind = \$mainMod SHIFT, C, exec, ~/.config/rofi/scripts/clipboard.sh' "$CONFIG_DIR/hypr/keybinds.conf"
+    assert_success
+}
+
+@test "clipboard script adds friendly rofi display labels" {
+    run grep -q 'display\\\\x1f' "$CONFIG_DIR/rofi/scripts/clipboard.sh"
+    assert_success
+    run grep -q "printf 'IMG" "$CONFIG_DIR/rofi/scripts/clipboard.sh"
+    assert_success
+    run grep -q "printf 'TXT" "$CONFIG_DIR/rofi/scripts/clipboard.sh"
     assert_success
 }
 

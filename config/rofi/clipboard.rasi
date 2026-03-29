@@ -1,0 +1,127 @@
+/**
+ * Clipboard History - Rofi Theme
+ * Catppuccin Mocha palette, dmenu-style vertical list
+ **/
+
+@import "colors.rasi"
+@import "fonts.rasi"
+
+configuration {
+    show-icons: false;
+}
+
+* {
+    border-colour:               var(selected);
+    background-colour:           var(background);
+    foreground-colour:           var(foreground);
+    alternate-background:        var(background-alt);
+    selected-normal-background:  var(selected);
+    selected-normal-foreground:  var(background);
+    normal-background:           var(background);
+    normal-foreground:           var(foreground);
+}
+
+window {
+    transparency:                "real";
+    location:                    center;
+    anchor:                      center;
+    fullscreen:                  false;
+    width:                       900px;
+    border:                      2px solid;
+    border-radius:               12px;
+    border-color:                @border-colour;
+    background-color:            #1E1D2FD9;
+    cursor:                      "default";
+}
+
+mainbox {
+    spacing:                     0px;
+    padding:                     0px;
+    background-color:            transparent;
+    children:                    [ "inputbar", "listview" ];
+}
+
+inputbar {
+    spacing:                     10px;
+    padding:                     14px 16px;
+    border-radius:               10px 10px 0px 0px;
+    background-color:            #282839E6;
+    text-color:                  @foreground-colour;
+    children:                    [ "textbox-prompt-colon", "entry", "case-indicator" ];
+}
+
+textbox-prompt-colon {
+    expand:                      false;
+    str:                         " Clipboard";
+    padding:                     2px 8px 2px 0px;
+    background-color:            transparent;
+    text-color:                  var(selected);
+}
+
+entry {
+    padding:                     2px 0px;
+    background-color:            transparent;
+    text-color:                  @foreground-colour;
+    cursor:                      text;
+    placeholder:                 "Search history...";
+    placeholder-color:           @foreground-colour;
+}
+
+case-indicator {
+    expand:                      false;
+    background-color:            transparent;
+    text-color:                  @foreground-colour;
+}
+
+listview {
+    columns:                     1;
+    lines:                       12;
+    cycle:                       true;
+    dynamic:                     true;
+    scrollbar:                   true;
+    layout:                      vertical;
+    spacing:                     2px;
+    padding:                     8px;
+    border:                      0px;
+    background-color:            transparent;
+}
+
+scrollbar {
+    handle-width:                4px;
+    handle-color:                @border-colour;
+    border-radius:               4px;
+    background-color:            #282839CC;
+}
+
+element {
+    spacing:                     8px;
+    padding:                     10px 12px;
+    border-radius:               8px;
+    background-color:            transparent;
+    text-color:                  @foreground-colour;
+    cursor:                      pointer;
+}
+
+element normal.normal {
+    background-color:            var(normal-background);
+    text-color:                  var(normal-foreground);
+}
+
+element selected.normal {
+    background-color:            var(selected-normal-background);
+    text-color:                  var(selected-normal-foreground);
+}
+
+element alternate.normal {
+    background-color:            #282839CC;
+    text-color:                  var(normal-foreground);
+}
+
+element-text {
+    background-color:            transparent;
+    text-color:                  inherit;
+    highlight:                   inherit;
+    cursor:                      inherit;
+    vertical-align:              0.5;
+    horizontal-align:            0.0;
+}

@@ -89,6 +89,50 @@ load 'test_helper'
     teardown_temp_home
 }
 
+@test "needs_migration returns 0 when a tracked config dependency changes" {
+    setup_temp_home
+    run bash -c "
+        export HOME='$HOME'
+        source '$UTILS_DIR/log.sh'
+
+        STATE_DIR=\"\$HOME/.dotfiles-migration-state\"
+        mkdir -p \"\$STATE_DIR\"
+
+        temp_root=\$(mktemp -d)
+        migration_script=\"\$temp_root/012-install-rofi.sh\"
+        dependency_dir=\"\$temp_root/config/rofi\"
+        dependency_file=\"\$dependency_dir/clipboard.rasi\"
+
+        mkdir -p \"\$dependency_dir\"
+        printf '#!/usr/bin/env bash\n' > \"\$migration_script\"
+        printf 'version-1\n' > \"\$dependency_file\"
+
+        $(grep -A 40 'calculate_checksum()' \"$DOTFILES_ROOT/install.sh\")
+        $(grep -A 40 'get_state_file()' \"$DOTFILES_ROOT/install.sh\")
+        $(grep -A 80 'needs_migration()' \"$DOTFILES_ROOT/install.sh\")
+        $(grep -A 40 'mark_completed()' \"$DOTFILES_ROOT/install.sh\")
+
+        mark_completed \"\$migration_script\" \"\$dependency_dir\"
+
+        if needs_migration \"\$migration_script\" \"\$dependency_dir\"; then
+            echo 'unexpected-needs-run'
+            exit 1
+        fi
+
+        printf 'version-2\n' > \"\$dependency_file\"
+
+        if needs_migration \"\$migration_script\" \"\$dependency_dir\"; then
+            echo 'needs_run'
+        else
+            echo 'stale_state'
+            exit 1
+        fi
+    "
+    assert_success
+    assert_output --partial "needs_run"
+    teardown_temp_home
+}
+
 @test "migration state directory is created by install.sh" {
     setup_temp_home
     STATE_DIR="$HOME/.dotfiles-migration-state"
