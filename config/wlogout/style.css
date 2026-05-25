@@ -8,110 +8,63 @@ window {
 }
 
 button {
-    background:
-        linear-gradient(rgba(30, 30, 46, 0.1), rgba(30, 30, 46, 0.1)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
-    border: 3px solid transparent;
+    background-color: rgba(30, 30, 46, 0.1);
+    border: 3px solid #cba6f7;
     border-radius: 12px;
     color: #cdd6f4;
     font-size: 14px;
     font-weight: 500;
     margin: 12px;
-    padding: 20px;
-    transition: background 200ms ease, box-shadow 200ms ease;
+    padding-top: 100px;
+    padding-bottom: 20px;
+    transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
 }
 
 button:hover {
-    background:
-        linear-gradient(rgba(30, 30, 46, 0.35), rgba(30, 30, 46, 0.35)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    background-color: rgba(30, 30, 46, 0.35);
+    border-color: #f2cdcd;
     box-shadow: 0 0 18px rgba(203, 166, 247, 0.7), 0 0 40px rgba(242, 205, 205, 0.25);
+    outline: none;
 }
-
-/* ── Icons ────────────────────────────────────────────────────────────────── */
-/* Each button needs its own background declaration to layer the icon above    */
-/* the gradient-border trick (background-image and background-clip interact).  */
 
 #lock {
-    background:
-        url("/usr/share/wlogout/icons/lock.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.1), rgba(30, 30, 46, 0.1)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
-    padding-top: 80px;
-}
-#lock:hover {
-    background:
-        url("/usr/share/wlogout/icons/lock.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.35), rgba(30, 30, 46, 0.35)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    background-image: url("/usr/share/wlogout/icons/lock.png");
+    background-repeat: no-repeat;
+    background-position: center 32%;
+    background-size: 72px;
 }
 
 #logout {
-    background:
-        url("/usr/share/wlogout/icons/logout.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.1), rgba(30, 30, 46, 0.1)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
-    padding-top: 80px;
-}
-#logout:hover {
-    background:
-        url("/usr/share/wlogout/icons/logout.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.35), rgba(30, 30, 46, 0.35)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    background-image: url("/usr/share/wlogout/icons/logout.png");
+    background-repeat: no-repeat;
+    background-position: center 32%;
+    background-size: 72px;
 }
 
 #suspend {
-    background:
-        url("/usr/share/wlogout/icons/suspend.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.1), rgba(30, 30, 46, 0.1)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
-    padding-top: 80px;
-}
-#suspend:hover {
-    background:
-        url("/usr/share/wlogout/icons/suspend.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.35), rgba(30, 30, 46, 0.35)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    background-image: url("/usr/share/wlogout/icons/suspend.png");
+    background-repeat: no-repeat;
+    background-position: center 32%;
+    background-size: 72px;
 }
 
 #hibernate {
-    background:
-        url("/usr/share/wlogout/icons/hibernate.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.1), rgba(30, 30, 46, 0.1)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
-    padding-top: 80px;
-}
-#hibernate:hover {
-    background:
-        url("/usr/share/wlogout/icons/hibernate.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.35), rgba(30, 30, 46, 0.35)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    background-image: url("/usr/share/wlogout/icons/hibernate.png");
+    background-repeat: no-repeat;
+    background-position: center 32%;
+    background-size: 72px;
 }
 
 #shutdown {
-    background:
-        url("/usr/share/wlogout/icons/shutdown.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.1), rgba(30, 30, 46, 0.1)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
-    padding-top: 80px;
-}
-#shutdown:hover {
-    background:
-        url("/usr/share/wlogout/icons/shutdown.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.35), rgba(30, 30, 46, 0.35)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    background-image: url("/usr/share/wlogout/icons/shutdown.png");
+    background-repeat: no-repeat;
+    background-position: center 32%;
+    background-size: 72px;
 }
 
 #reboot {
-    background:
-        url("/usr/share/wlogout/icons/reboot.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.1), rgba(30, 30, 46, 0.1)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
-    padding-top: 80px;
-}
-#reboot:hover {
-    background:
-        url("/usr/share/wlogout/icons/reboot.png") center 28% / 48px no-repeat,
-        linear-gradient(rgba(30, 30, 46, 0.35), rgba(30, 30, 46, 0.35)) padding-box,
-        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    background-image: url("/usr/share/wlogout/icons/reboot.png");
+    background-repeat: no-repeat;
+    background-position: center 32%;
+    background-size: 72px;
 }
