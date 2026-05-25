@@ -69,7 +69,6 @@ hl.animation({ leaf = "fade",        enabled = false })
 
 hl.config({
     dwindle = {
-        pseudotile     = true,
         preserve_split = true,
     },
 })
@@ -121,4 +120,5 @@ hl.config({
 
 -- ─── Per-machine overrides ────────────────────────────────────────────────
 
-pcall(require, "local")
+local local_cfg = (os.getenv("HOME") or "") .. "/.config/hypr/local.lua"
+if io.open(local_cfg, "r") then require("local") end

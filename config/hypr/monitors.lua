@@ -7,8 +7,8 @@
 --   Left  — Acer Technologies XV272U  @ 0x0
 --   Right — ASUSTek COMPUTER INC BE27A @ 2560x0
 
-hl.monitor({ desc = "XV272U",   mode = "2560x1440", position = "0x0",    scale = 1 })
-hl.monitor({ desc = "BE27A",    mode = "2560x1440", position = "2560x0", scale = 1 })
+hl.monitor({ output = "desc:XV272U", mode = "2560x1440", position = "0x0",    scale = 1 })
+hl.monitor({ output = "desc:BE27A", mode = "2560x1440", position = "2560x0", scale = 1 })
 hl.monitor({ output = "eDP-1", mode = "preferred",  position = "auto",   scale = 1.6 })
 hl.monitor({ output = "",      mode = "preferred",  position = "auto",   scale = "auto" })
 
