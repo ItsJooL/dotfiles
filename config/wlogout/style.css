@@ -8,23 +8,27 @@ window {
 }
 
 button {
-    background-color: rgba(49, 50, 68, 0.85);
+    /* Gradient border matching Hyprland active window border (mauve → flamingo, 90°) */
+    background:
+        linear-gradient(rgba(49, 50, 68, 0.85), rgba(49, 50, 68, 0.85)) padding-box,
+        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    border: 2px solid transparent;
     border-radius: 12px;
-    border: 2px solid rgba(137, 180, 250, 0.2);
     color: #cdd6f4;
     font-size: 14px;
     font-weight: 500;
     margin: 12px;
     padding: 20px;
-    transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    transition: background 200ms ease, box-shadow 200ms ease;
 }
 
 button:focus,
 button:active,
 button:hover {
-    background-color: rgba(137, 180, 250, 0.2);
-    border-color: #89b4fa;
-    box-shadow: 0 0 12px rgba(137, 180, 250, 0.3);
+    background:
+        linear-gradient(rgba(69, 71, 90, 0.9), rgba(69, 71, 90, 0.9)) padding-box,
+        linear-gradient(90deg, #cba6f7, #f2cdcd) border-box;
+    box-shadow: 0 0 14px rgba(203, 166, 247, 0.35);
     outline: none;
 }
 
