@@ -10,11 +10,19 @@ local menu     = "rofi -show drun -modi drun,filebrowser,run,window -theme ~/.co
 -- Replaces scripts/scale.sh — runs entirely in Lua at bind time.
 
 local function step_scale(direction)
+    -- Get the active monitor name
+    local aw = io.popen("hyprctl activeworkspace -j 2>/dev/null")
+    if not aw then return end
+    local aw_json = aw:read("*a"); aw:close()
+    local monitor = aw_json:match('"monitor":"([^"]+)"')
+    if not monitor then return end
+
+    -- Get that monitor's current dimensions and scale
     local h = io.popen("hyprctl monitors -j 2>/dev/null")
     if not h then return end
     local json = h:read("*a"); h:close()
 
-    local pos = json:find('"eDP%-1"')
+    local pos = json:find('"' .. monitor .. '"')
     if not pos then return end
     local block = json:sub(pos, pos + 500)
 
@@ -41,10 +49,10 @@ local function step_scale(direction)
     if direction == "down" then idx = math.max(idx - 1, 1)       end
 
     local new = scales[idx]
-    os.execute(string.format("hyprctl keyword monitor 'eDP-1,preferred,auto,%.2f'", new))
+    os.execute(string.format("hyprctl keyword monitor '%s,preferred,auto,%.2f'", monitor, new))
     os.execute(string.format(
         "notify-send -u low -t 1500 -h string:x-canonical-private-synchronous:scale-notify " ..
-        "'Monitor Scale' 'Scale: %.2f'", new
+        "'Monitor Scale (%s)' 'Scale: %.2f'", monitor, new
     ))
 end
 
