@@ -137,7 +137,7 @@
 
   "custom/wlogout": {
     "format": "⏻",
-    "on-click": "wlogout -b 5 -T 400 -B 400",
+    "on-click": "wlogout -b 3 -c 20 -r 20 -m 200 --layout ~/.config/wlogout/layout --css ~/.config/wlogout/style.css",
     "tooltip": "Power Menu",
   },
 }

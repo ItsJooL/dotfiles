@@ -98,7 +98,7 @@ link_configurations() {
     esac
 
     info "Linking Hyprland ecosystem configurations..."
-    local configs_to_link=("hypr" "waybar" "swaync")
+    local configs_to_link=("hypr" "waybar" "swaync" "wlogout")
 
     for config in "${configs_to_link[@]}"; do
         info "Linking $config configuration..."
