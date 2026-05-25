@@ -46,7 +46,7 @@ install_fedora_packages() {
 
     # Enable required COPR repositories
     info "Enabling COPR repositories..."
-    sudo dnf copr enable -y solopasha/hyprland &>/dev/null || warn "Failed to enable solopasha/hyprland COPR repo."
+    sudo dnf copr enable -y lionheartp/Hyprland &>/dev/null || warn "Failed to enable lionheartp/Hyprland COPR repo."
     sudo dnf copr enable -y erikreider/SwayNotificationCenter &>/dev/null || warn "Failed to enable COPR for SwayNotificationCenter."
 
     local packages=(
