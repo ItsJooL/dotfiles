@@ -1,0 +1,75 @@
+name: Mirror from Codeberg
+
+on:
+  # Allows manual runs from the GitHub Actions page
+  workflow_dispatch:
+
+  # Run at 00:17 UTC on the first day of every month
+  schedule:
+    - cron: "17 0 1 * *"
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    name: Mirror Codeberg main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out GitHub repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Update from Codeberg and preserve GitHub CI
+        env:
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+
+        run: |
+          set -euo pipefail
+
+          echo "Saving GitHub-only workflow..."
+
+          cp .github/workflows/mirror.yml \
+            "$RUNNER_TEMP/mirror.yml"
+
+          echo "Configuring Git..."
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          echo "Fetching Codeberg..."
+
+          git remote add codeberg \
+            https://codeberg.org/jool/dotfiles.git
+
+          git fetch codeberg main
+
+          echo "Resetting GitHub main to Codeberg main..."
+
+          git reset --hard codeberg/main
+
+          echo "Restoring GitHub-only workflow..."
+
+          mkdir -p .github/workflows
+
+          cp "$RUNNER_TEMP/mirror.yml" \
+            .github/workflows/mirror.yml
+
+          echo "Creating GitHub CI overlay commit..."
+
+          git add .github/workflows/mirror.yml
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Preserve GitHub mirror workflow"
+          fi
+
+          echo "Pushing updated main to GitHub..."
+
+          git remote set-url origin \
+            "https://x-access-token:${MIRROR_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git push --force origin HEAD:main
