@@ -1,14 +1,20 @@
 -- Monitor configuration
 --
 -- External monitors are matched by description (port-agnostic — survives dock changes).
+-- NOTE: hl.monitor()/hl.workspace_rule()'s "desc:" selector requires the FULL
+-- description string, not a fragment — a fragment like "desc:XV272U" silently
+-- matches nothing (verified against Hyprland 0.56.2 via `hyprctl eval`).
 -- eDP-1 (laptop panel) is always configured; the startup hook disables it when docked.
 --
 -- Home desk setup:
 --   Left  — Acer Technologies XV272U  @ 0x0
 --   Right — ASUSTek COMPUTER INC BE27A @ 2560x0
 
-hl.monitor({ output = "desc:XV272U", mode = "2560x1440", position = "0x0", scale = 1 })
-hl.monitor({ output = "desc:BE27A", mode = "2560x1440", position = "2560x0", scale = 1 })
+local ACER_DESC = "desc:Acer Technologies XV272U 0x9130E3C4"
+local ASUS_DESC = "desc:ASUSTek COMPUTER INC BE27A L5LMQS024968"
+
+hl.monitor({ output = ACER_DESC, mode = "2560x1440", position = "0x0", scale = 1 })
+hl.monitor({ output = ASUS_DESC, mode = "2560x1440", position = "2560x0", scale = 1 })
 hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 1.6 })
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
 
@@ -38,7 +44,7 @@ hl.on("hyprland.start", function()
     for _, ws in ipairs({ "1", "2", "3" }) do
       hl.workspace_rule({
         workspace = ws,
-        monitor = "desc:XV272U",
+        monitor = ACER_DESC,
         default = (ws == "1")
       })
     end
@@ -46,7 +52,7 @@ hl.on("hyprland.start", function()
     for _, ws in ipairs({ "4", "5", "6" }) do
       hl.workspace_rule({
         workspace = ws,
-        monitor = "desc:BE27A",
+        monitor = ASUS_DESC,
         default = (ws == "4")
       })
     end

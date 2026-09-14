@@ -80,7 +80,8 @@ hl.bind(mainMod .. " + C",           hl.dsp.exec_cmd("flatpak run com.google.Chr
 hl.bind(mainMod .. " + Q",           hl.dsp.window.close())
 hl.bind(mainMod .. " + M",           hl.dsp.exec_cmd("hyprctl dispatch exit"))
 hl.bind(mainMod .. " + V",           hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + F",           hl.dsp.exec_cmd("hyprctl dispatch fullscreen 1"))
+hl.bind(mainMod .. " + F",           hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
+hl.bind(mainMod .. " + SHIFT + F",   hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind(mainMod .. " + W",           hl.dsp.exec_cmd("hyprctl dispatch togglegroup"))
 hl.bind(mainMod .. " + Y",           hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + E",           hl.dsp.layout("togglesplit"))
@@ -96,7 +97,7 @@ hl.bind(mainMod .. " + SHIFT + R",   hl.dsp.exec_cmd("hyprctl reload"))
 -- ─── Monitor control ──────────────────────────────────────────────────────
 
 hl.bind(mainMod .. " + SHIFT + D",   hl.dsp.exec_cmd("hyprctl keyword monitor eDP-1,disable"))
-hl.bind(mainMod .. " + SHIFT + F",   hl.dsp.exec_cmd("hyprctl keyword monitor 'eDP-1,preferred,auto,1.20'"))
+hl.bind(mainMod .. " + SHIFT + CTRL + F",   hl.dsp.exec_cmd("hyprctl keyword monitor 'eDP-1,preferred,auto,1.20'"))
 hl.bind(mainMod .. " + SHIFT + CTRL + Up",   function() step_scale("up")   end)
 hl.bind(mainMod .. " + SHIFT + CTRL + Down", function() step_scale("down") end)
 
